@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'bot/Main'
+group 'org.hirshi001'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'net.dv8tion:JDA:4.1.1_140'
+    compile 'org.mongodb:mongodb-driver-sync:4.0.5'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+}
