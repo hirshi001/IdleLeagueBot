@@ -12,21 +12,56 @@ import java.util.Map;
 
 public class MongoConnection {
 
-    public static MongoClient client;
-    public static MongoDatabase db;
+    private static MongoClient CLIENT;
+    private static MongoDatabase DATABASE;
+    private static MongoCollection<Document> ONE_V_ONE_BOT_DATA_COLLECTION;
+    private static MongoCollection<Document> USER_COLLECTION;
+    private static MongoCollection<Document> COOLDOWNS_COLLECTION;
+    private static MongoCollection<Document> BANNED;
+    private static MongoCollection<Document> ADMINS;
+    private static MongoCollection<Document> CHANNEL_COMMANDS;
+
 
     public static void setup(String name, String password, String dbname){
-        client = MongoClients.create(new ConnectionString("mongodb+srv://idleleague:"+password+"@"+name+".wsx3r.mongodb.net/"+dbname+"?retryWrites=true&w=majority"));
-        db = client.getDatabase("idleleague");
+        CLIENT = MongoClients.create(new ConnectionString("mongodb+srv://idleleague:"+password+"@"+name+".wsx3r.mongodb.net/"+dbname+"?retryWrites=true&w=majority"));
+        DATABASE = CLIENT.getDatabase("idleleague");
+
+        ONE_V_ONE_BOT_DATA_COLLECTION = DATABASE.getCollection("onevonebotdata");
+        USER_COLLECTION = DATABASE.getCollection("users");
+        COOLDOWNS_COLLECTION = DATABASE.getCollection("cooldowns");
+        BANNED = DATABASE.getCollection("banned");
+        ADMINS = DATABASE.getCollection("admins");
+        CHANNEL_COMMANDS = DATABASE.getCollection("channelcommands");
     }
 
 
     public static MongoDatabase getDatabase(){
-        return db;
+        return DATABASE;
     }
 
     public static MongoCollection<Document> getOneVOneBotCollection(){
-        return db.getCollection("onevonebotdata");
+        return ONE_V_ONE_BOT_DATA_COLLECTION;
     }
+
+    public static MongoCollection<Document> getUsersCollection(){
+        return USER_COLLECTION;
+    }
+
+    public static MongoCollection<Document> getCooldownsCollection(){
+        return COOLDOWNS_COLLECTION;
+    }
+
+    public static MongoCollection<Document> getBannedCollection(){
+        return BANNED;
+    }
+
+    public static MongoCollection<Document> getAdminCollection(){
+        return ADMINS;
+    }
+
+    public static MongoCollection<Document> getChannelCommandsCollection(){
+        return CHANNEL_COMMANDS;
+    }
+
 
 }
