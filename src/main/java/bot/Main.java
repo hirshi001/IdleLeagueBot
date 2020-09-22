@@ -15,8 +15,9 @@ public class Main{
     static String token;
     public static void main(String[] args) throws Exception{
 
-        String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
+        String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ").substring(5);
         File f = new File(path);
+        System.out.println(path);
         Scanner scanner = new Scanner(new FileInputStream(f));
         token = scanner.nextLine();
 
