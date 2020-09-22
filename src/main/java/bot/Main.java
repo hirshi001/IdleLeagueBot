@@ -14,7 +14,7 @@ public class Main{
 
     static String token = "NzA1NTQ0NDA3MTU5NjY4ODQ2.XqtPbw.66g4JOdCj81Mztak5c8i4nExxlA";
     public static void main(String[] args) throws Exception {
-    /*
+
         String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
         File f = new File(path);
         System.out.println(path);
@@ -26,7 +26,7 @@ public class Main{
         System.out.println(token);
 
 
-     */
+
         new Bot(token);
     }
 
