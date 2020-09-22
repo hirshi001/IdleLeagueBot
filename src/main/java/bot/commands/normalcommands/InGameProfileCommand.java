@@ -43,11 +43,12 @@ public class InGameProfileCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        MongoCollection<Document> collection= MongoConnection.getDatabase().getCollection("usersingame");
+        MongoCollection<Document> collection= MongoConnection.getOneVOneBotCollection();
         Long id = event.getAuthor().getIdLong();
         Document d = collection.find(eq(id)).first();
 
-        Champion c = ChampionRegistry.getChampion(d.getLong("champion"));
+        Document playerDoc = d.get("player", Document.class);
+        Champion c = ChampionRegistry.getChampion(playerDoc.getLong("champion"));
 
         EmbedBuilder profile = new EmbedBuilder();
         profile.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
@@ -56,17 +57,17 @@ public class InGameProfileCommand extends Command {
             profile.setImage("http://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + key + "_0.jpg");
         }
         profile.setColor(Color.blue);
-        profile.setTitle(d.getString("name"));
+        profile.setTitle(playerDoc.getString("name"));
         if(c!=null) {
             String champName = c.getName();
             profile.addField("Champion", champName, true);
         } else{
             profile.addField("Champion", "None", true);
         }
-        profile.addField("Level", d.getInteger("level").toString(), true);
+        profile.addField("Level", playerDoc.getInteger("level").toString(), true);
         profile.addBlankField(false);
-        profile.addField("Experience", d.getInteger("experience").toString(),true);
-        profile.addField("Gold", d.getInteger("gold").toString(),true);
+        profile.addField("Experience", playerDoc.getInteger("experience").toString(),true);
+        profile.addField("Gold", playerDoc.getInteger("gold").toString(),true);
 
         event.getChannel().sendMessage(profile.build()).queue();
 

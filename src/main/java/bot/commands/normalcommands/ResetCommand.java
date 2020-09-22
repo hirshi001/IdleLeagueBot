@@ -62,6 +62,7 @@ public class ResetCommand extends Command {
                 db.getCollection("users").findOneAndDelete(filter);
                 db.getCollection("cooldowns").findOneAndDelete(filter);
                 db.getCollection("usersingame").findOneAndDelete(filter);
+                db.getCollection("onevonebotdata").findOneAndDelete(filter);
 
                 event.getChannel().sendMessage("<@"+event.getAuthor().getId() + ">, your account has been deleted").queue();
                 deleting.remove(id);

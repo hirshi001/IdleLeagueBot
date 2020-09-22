@@ -44,7 +44,7 @@ public class Bot extends ListenerAdapter{
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
 
         name = jda.getSelfUser().getName().toLowerCase();
-        manager = new NormalCommandManager(jda);
+        manager = new AdminCommandManager(jda);
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
         manager.addCommand( new CreateAccountCommand(),"createaccount");
