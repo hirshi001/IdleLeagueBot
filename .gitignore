@@ -1,25 +1,29 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
 
-# idea
-out
-*.ipr
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
 *.iws
 *.iml
-.idea
+*.ipr
+/out/
 
-# gradle
-build
-.gradle
-
-# other
-eclipse
-run
-
-#secrets
-#*.secrets
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+docs/gradle-getting-started
+docs/tmp
+.vscode/
