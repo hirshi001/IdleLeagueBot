@@ -1,0 +1,2 @@
+# IdleLeagueBot
+Discord Bot
