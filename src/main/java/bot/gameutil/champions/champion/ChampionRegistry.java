@@ -9,8 +9,11 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -19,13 +22,22 @@ public class ChampionRegistry {
 
     public static final Map<Long, Champion> idChampMap = new Hashtable<>();
     public static final Map<String, Champion> stringChampMap = new Hashtable<>();
+    public static final List<Champion> champList = new ArrayList<>();
 
 
     public static void registerChampion(long id, Champion c){
         c.setId(id);
         idChampMap.put(id, c);
         stringChampMap.put(c.getName().toLowerCase(), c);
+        champList.add(c);
+    }
 
+    public static Champion getRandomChampion(){
+        return champList.get((int)(Math.random()*champList.size()));
+    }
+
+    public static Champion getRandomChampion(int lane){
+        return getRandomChampion();
     }
 
     public static Champion getChampion(long id){

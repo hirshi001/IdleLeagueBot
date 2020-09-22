@@ -71,7 +71,7 @@ public class CommandManager extends ListenerAdapter {
             }
 
             if (ce.command.requiredInGame()) {
-                Document userDoc = db.getCollection("onevonebotdata").find((eq(id))).first();
+                Document userDoc = MongoConnection.getOneVOneBotCollection().find((eq(id))).first();
                 if (!userDoc.getBoolean("ingame")) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setColor(Color.blue);
@@ -83,7 +83,7 @@ public class CommandManager extends ListenerAdapter {
             }
 
             if (ce.command.requiresLiving()) {
-                MongoCollection<Document> usersingame = db.getCollection("onevonebotdata");
+                MongoCollection<Document> usersingame = MongoConnection.getOneVOneBotCollection();
                 Document userDoc = usersingame.find((eq(id))).first();
                 if (userDoc.getBoolean("isdead")) {
                     long revivetime = userDoc.getLong("revivetime");

@@ -43,7 +43,7 @@ public class JungleCommand extends Command {
 
         Long id = event.getAuthor().getIdLong();
 
-        MongoCollection<Document> userCollection =  MongoConnection.getDatabase().getCollection("usersingame");
+        MongoCollection<Document> userCollection =  MongoConnection.getOneVOneBotCollection();
 
         Bson filter = eq(id);
         final Document document = userCollection.find(filter).first();
@@ -172,6 +172,11 @@ public class JungleCommand extends Command {
         }
 
         jungling.remove(id);
+    }
+
+    @Override
+    public boolean requiresAccount() {
+        return true;
     }
 
     @Override

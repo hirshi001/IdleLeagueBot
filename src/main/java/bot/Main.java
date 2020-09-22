@@ -1,6 +1,8 @@
 package bot;
 
 
+import bot.database.MongoConnection;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Scanner;
@@ -18,6 +20,9 @@ public class Main{
         File f = new File(path);
         Scanner scanner = new Scanner(new FileInputStream(f));
         token = scanner.nextLine();
+
+        MongoConnection.setup(scanner.nextLine(), scanner.nextLine(), "idleleague");
+
         System.out.println(token);
 
         new Thread(){

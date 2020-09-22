@@ -39,6 +39,8 @@ public class Bot extends ListenerAdapter{
     private CommandManager manager;
     public Bot(String token) throws LoginException, InterruptedException {
 
+        ChampionRegistry.registerAllChampions();
+
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
 
         name = jda.getSelfUser().getName().toLowerCase();
@@ -77,7 +79,6 @@ public class Bot extends ListenerAdapter{
 
         jda.addEventListener(this);
 
-        ChampionRegistry.registerAllChampions();
 
     }
 
