@@ -14,13 +14,12 @@ out
 .idea
 
 # gradle
-build
 .gradle
+build
 
 # other
 eclipse
 run
 
 #secrets
-.secrets
 *.secrets
