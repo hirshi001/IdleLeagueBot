@@ -14,9 +14,8 @@ public class Main{
 
     static String token;
     public static void main(String[] args) throws Exception{
-
-        String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ").substring(5);
-        path = "/Users/hrishikesh/Desktop/Jav Discord Bots/JavaDiscordBot/build/resources/main/bot.secrets";
+    /*
+        String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
         File f = new File(path);
         System.out.println(path);
         Scanner scanner = new Scanner(new FileInputStream(f));
@@ -26,6 +25,8 @@ public class Main{
 
         System.out.println(token);
 
+
+     */
         new Thread(){
             @Override
             public void run() {
