@@ -14,7 +14,6 @@ public class Main{
 
     static String token;
     public static void main(String[] args) throws Exception{
-       // System.out.println(Calculator.calculate("(2+10)"));
 
         String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
         File f = new File(path);
@@ -35,16 +34,6 @@ public class Main{
                 }
             }
         }.start();
-
-
-
-
-
-
-
-
-
-
     }
 
 }

@@ -23,3 +23,11 @@ dependencies {
 task stage {
     dependsOn installDist
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'bot.Main'
+        )
+    }
+}
