@@ -2,6 +2,7 @@ package bot.commands.normalcommands;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.commands.normalcommands.lolcommand.OneVOneBotCommand;
 import bot.database.MongoConnection;
 import bot.gameutil.LaneConstants;
 import com.mongodb.client.MongoCollection;
@@ -38,8 +39,7 @@ public class CreateAccountCommand extends Command {
         }
 
         final Long id = event.getAuthor().getIdLong();
-        MongoDatabase db = MongoConnection.getDatabase();
-        MongoCollection<Document> collection = db.getCollection("users");
+        MongoCollection<Document> collection = MongoConnection.getUsersCollection();
 
         Bson filter = eq(id);
 
@@ -55,20 +55,11 @@ public class CreateAccountCommand extends Command {
                 append("be", 0);
         collection.insertOne(userDoc);
 
-        MongoCollection<Document> inGameCollection = db.getCollection("onevonebotdata");
-        Document inGameDoc = new Document("_id",id).
-                append("ingame", false).
-                append("isdead", false).
-                append("revivetime", 0).
-                append("champion", -1).
-                append("lane", LaneConstants.NONE).
-                append("gold", 0).
-                append("level", 0).
-                append("experience", 0).
-                append("items", new ArrayList<Integer>(6));
+        MongoCollection<Document> inGameCollection = MongoConnection.getOneVOneBotCollection();
+        Document inGameDoc = OneVOneBotCommand.defaultGameDoc(id);
         inGameCollection.insertOne(inGameDoc);
 
-        MongoCollection<Document> cooldownCollection = db.getCollection("cooldowns");
+        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
         Document cooldownDoc = new Document("_id", id);
         cooldownCollection.insertOne(cooldownDoc);
 

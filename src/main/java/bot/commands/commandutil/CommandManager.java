@@ -76,7 +76,7 @@ public class CommandManager extends ListenerAdapter {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setColor(Color.blue);
                     eb.setTitle("Whoops, you pulled an uh oh");
-                    eb.addField(ce.command.inGameRequireTitle(), "To start a game, type " + prefix + " startgame", false);
+                    eb.addField(ce.command.inGameRequireTitle(), "To start a game, type " + prefix + " onevonebot", false);
                     event.getChannel().sendMessage(eb.build()).queue();
                     return;
                 }
@@ -84,7 +84,7 @@ public class CommandManager extends ListenerAdapter {
 
             if (ce.command.requiresLiving()) {
                 MongoCollection<Document> usersingame = MongoConnection.getOneVOneBotCollection();
-                Document userDoc = usersingame.find((eq(id))).first();
+                Document userDoc = usersingame.find((eq(id))).first().get("player",Document.class);
                 if (userDoc.getBoolean("isdead")) {
                     long revivetime = userDoc.getLong("revivetime");
                     long time = System.currentTimeMillis();

@@ -47,7 +47,7 @@ public class JungleCommand extends Command {
 
         Bson filter = eq(id);
         final Document document = userCollection.find(filter).first();
-        jungle(id, event, userCollection, document);
+        jungle(id, event, userCollection, document.get("player",Document.class));
     }
 
     private void jungle(Long id, GuildMessageReceivedEvent event, MongoCollection<Document> userCollection, Document d) {
@@ -71,7 +71,7 @@ public class JungleCommand extends Command {
 
         }
 
-        MongoCollection<Document> cooldownCollection = MongoConnection.getDatabase().getCollection("cooldowns");
+        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
         Document cooldownDoc = cooldownCollection.find(eq(id)).first();
         assert cooldownDoc != null : "User doesn't have cooldownDoc?";
         Long cooldownStart = cooldownDoc.getLong("jungle");
@@ -134,13 +134,13 @@ public class JungleCommand extends Command {
             }
 
             filter = eq(id);
-            updateOperation = set("gold", gold);
+            updateOperation = set("player.gold", gold);
             userCollection.updateOne(filter, updateOperation);
 
-            updateOperation = set("level", newLevel);
+            updateOperation = set("player.level", newLevel);
             userCollection.updateOne(filter, updateOperation);
 
-            updateOperation = set("experience", experience);
+            updateOperation = set("player.experience", experience);
             userCollection.updateOne(filter, updateOperation);
 
 

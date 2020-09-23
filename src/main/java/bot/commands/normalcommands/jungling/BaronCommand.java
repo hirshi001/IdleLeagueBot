@@ -57,15 +57,15 @@ public class BaronCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        MongoDatabase db = MongoConnection.getDatabase();
-        MongoCollection<Document> userCollection = db.getCollection("usersingame");
+
         final Long id = event.getAuthor().getIdLong();
         if(askingToDoBaron.contains(id)){
             askingToDoBaron.remove(id);
             return;
         }
 
-        Document userDoc = userCollection.find(eq(id)).first();
+        MongoCollection<Document> userCollection = MongoConnection.getOneVOneBotCollection();
+        Document userDoc = userCollection.find(eq(id)).first().get("player", Document.class);
         int level = userDoc.getInteger("level");
 
         if(level <=12 ){
@@ -74,7 +74,7 @@ public class BaronCommand extends Command {
             return;
         }
 
-        baron(id, event);
+        baron(id, event, userDoc);
     }
 
     @Override
@@ -93,9 +93,12 @@ public class BaronCommand extends Command {
     }
 
     private void baron(Long id, GuildMessageReceivedEvent event){
+        baron(id, event, MongoConnection.getOneVOneBotCollection().find(eq(id)).first().get("player", Document.class));
+    }
 
-        MongoDatabase db = MongoConnection.getDatabase();
-        MongoCollection<Document> cooldownCollection = db.getCollection("cooldowns");
+    private void baron(Long id, GuildMessageReceivedEvent event, Document userDoc){
+
+        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
         Document cooldownDoc = cooldownCollection.find(eq(id)).first();
         Long startCooldown = cooldownDoc.getLong("baron");
         Integer cooldownLevel = cooldownDoc.getInteger("jungle cooldown level");
@@ -114,7 +117,7 @@ public class BaronCommand extends Command {
         cooldownCollection.updateOne(eq(id), set("baron",System.currentTimeMillis()));
 
 
-        MongoCollection<Document> userCollection = db.getCollection("onevonedoc");
+        MongoCollection<Document> userCollection = MongoConnection.getOneVOneBotCollection();
 
         AtomicReference<Message> messageSent = new AtomicReference<>();
 
@@ -123,7 +126,6 @@ public class BaronCommand extends Command {
         try {
             Thread.sleep(baronTime);
             messageSent.get().delete();
-            Document userDoc = userCollection.find(eq(id)).first();
 
             int experience = userDoc.getInteger("experience");
             int gold = userDoc.getInteger("gold");
@@ -141,15 +143,18 @@ public class BaronCommand extends Command {
                 newLevel++;
             }
 
-            Bson filter;
+            Bson filter, updateOperation;
 
             filter = eq(id);
 
-            userDoc.put("gold", gold);
-            userDoc.put("level", newLevel);
-            userDoc.put("experience", experience);
+            updateOperation = set("player.gold", gold);
+            userCollection.updateOne(filter, updateOperation);
 
-            userCollection.replaceOne(filter, userDoc);
+            updateOperation = set("player.level", newLevel);
+            userCollection.updateOne(filter, updateOperation);
+
+            updateOperation = set("player.experience", experience);
+            userCollection.updateOne(filter, updateOperation);
 
 
             StringBuilder sb = new StringBuilder();

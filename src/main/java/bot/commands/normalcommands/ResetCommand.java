@@ -57,12 +57,10 @@ public class ResetCommand extends Command {
         if(deleting.contains(id)){
             if(event.getMessage().getContentRaw().equals("confirm")){
                 Bson filter = eq(id);
-                MongoDatabase db = MongoConnection.getDatabase();
 
-                db.getCollection("users").findOneAndDelete(filter);
-                db.getCollection("cooldowns").findOneAndDelete(filter);
-                db.getCollection("usersingame").findOneAndDelete(filter);
-                db.getCollection("onevonebotdata").findOneAndDelete(filter);
+                MongoConnection.getUsersCollection().findOneAndDelete(filter);
+                MongoConnection.getCooldownsCollection().findOneAndDelete(filter);
+                MongoConnection.getOneVOneBotCollection().findOneAndDelete(filter);
 
                 event.getChannel().sendMessage("<@"+event.getAuthor().getId() + ">, your account has been deleted").queue();
                 deleting.remove(id);

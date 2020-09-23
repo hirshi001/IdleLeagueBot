@@ -43,11 +43,11 @@ public class BuyItemCommand extends Command {
             event.getChannel().sendMessage("This item doesn't exist").queue();
             return;
         }
-        MongoCollection<Document> usersingame = db.getCollection("usersingame");
+        MongoCollection<Document> oneVoneCollection = MongoConnection.getOneVOneBotCollection();
         Long id = event.getAuthor().getIdLong();
         Bson filter = eq(id);
 
-        Document d = usersingame.find(filter).first();
+        Document d = oneVoneCollection.find(filter).first().get("player", Document.class);
 
         List<Integer> items = d.getList("items", Integer.class);
 
@@ -67,11 +67,11 @@ public class BuyItemCommand extends Command {
         items.add(itemToBuy.getId());
         userMoney-=itemCost;
 
-        Bson updateOp = set("gold", userMoney);
-        usersingame.findOneAndUpdate(filter, updateOp);
+        Bson updateOp = set("player.gold", userMoney);
+        oneVoneCollection.findOneAndUpdate(filter, updateOp);
 
-        updateOp = set("items", items);
-        usersingame.findOneAndUpdate(filter, updateOp);
+        updateOp = set("player.items", items);
+        oneVoneCollection.findOneAndUpdate(filter, updateOp);
 
         event.getChannel().sendMessage("You successfully bought a " +itemToBuy.getName()).queue();
 

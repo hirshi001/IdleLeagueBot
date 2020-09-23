@@ -31,8 +31,8 @@ public class ShowItemsCommand extends Command {
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
         Long id = event.getAuthor().getIdLong();
-        MongoCollection<Document> userCollection = MongoConnection.getDatabase().getCollection("usersingame");
-        Document userDoc = userCollection.find(eq(id)).first();
+        MongoCollection<Document> userCollection = MongoConnection.getOneVOneBotCollection();
+        Document userDoc = userCollection.find(eq(id)).first().get("player",Document.class);
 
         List<Integer> items = userDoc.getList("items", Integer.class);
 

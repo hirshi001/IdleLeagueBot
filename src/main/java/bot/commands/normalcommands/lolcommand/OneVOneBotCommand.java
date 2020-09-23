@@ -105,7 +105,15 @@ public class OneVOneBotCommand extends Command {
 
     }
 
-    private Document createNewChampDoc(int lane, Champion champion){
+    public static Document defaultGameDoc(long id){
+        return new Document("_id", id).
+                append("ingame", false).
+                append("player", createNewChampDoc(-1, ChampionRegistry.DEFAULT_CHAMPION)).
+                append("bot", createNewChampDoc(-1, ChampionRegistry.DEFAULT_CHAMPION));
+    }
+
+
+    public static Document createNewChampDoc(int lane, Champion champion){
         return new Document().
                 append("champion", champion.getId()).
                 append("isdead", false).

@@ -24,6 +24,8 @@ public class ChampionRegistry {
     public static final Map<String, Champion> stringChampMap = new Hashtable<>();
     public static final List<Champion> champList = new ArrayList<>();
 
+    public static final Champion DEFAULT_CHAMPION = new Champion("default champion", "null", new Stats());
+
 
     public static void registerChampion(long id, Champion c){
         c.setId(id);
