@@ -177,7 +177,7 @@ public class BaronCommand extends Command {
 
 
         } catch (InterruptedException e) {
-            event.getChannel().sendMessage("attempt failed for unknown reason").queue();
+            event.getChannel().sendMessage("attempt failed due to glitch in the system").queue();
         }
 
         messageSent.get().delete().queue();

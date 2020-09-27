@@ -31,17 +31,17 @@ public class SellItemCommand extends Command {
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
 
-        MongoDatabase db = MongoConnection.getDatabase();
         msg = msg.toLowerCase();
         if(!ItemRegistry.containsItem(msg)){
             event.getChannel().sendMessage("This item doesn't exist").queue();
             return;
         }
-        MongoCollection<Document> usersCollection = db.getCollection("users");
+
+        MongoCollection<Document> usersCollection = MongoConnection.getOneVOneBotCollection();
         Long id = event.getAuthor().getIdLong();
         Bson filter = eq(id);
 
-        Document d = usersCollection.find(filter).first();
+        Document d = usersCollection.find(filter).first().get("player", Document.class);
 
         List<Integer> items = d.getList("items", Integer.class);
 
