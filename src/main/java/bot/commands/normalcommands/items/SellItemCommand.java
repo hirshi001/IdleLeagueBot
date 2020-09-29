@@ -30,7 +30,10 @@ public class SellItemCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-
+        if(true){
+            event.getChannel().sendMessage("this command is currently disabled").queue();
+            return;
+        }
         msg = msg.toLowerCase();
         if(!ItemRegistry.containsItem(msg)){
             event.getChannel().sendMessage("This item doesn't exist").queue();
