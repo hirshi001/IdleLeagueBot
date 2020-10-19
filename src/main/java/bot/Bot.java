@@ -6,6 +6,7 @@ import bot.commands.admincommands.StopBotCommand;
 import bot.commands.admincommands.UnbanCommand;
 import bot.commands.commandutil.AdminCommandManager;
 import bot.commands.commandutil.NormalCommandManager;
+import bot.commands.normalcommands.InviteLink;
 import bot.commands.normalcommands.items.BuyItemCommand;
 import bot.commands.normalcommands.items.SellItemCommand;
 import bot.commands.normalcommands.items.ShowItemsCommand;
@@ -66,6 +67,8 @@ public class Bot extends ListenerAdapter{
         manager.addCommand( new BuyItemCommand(),"buy");
         manager.addCommand( new ShowItemsCommand(), "items");
         manager.addCommand( new SellItemCommand(), "sell");
+
+        manager.addCommand(new InviteLink(), "invitelink");
 
         //manager.addCommand("help");
         jda.addEventListener(manager);
