@@ -1,7 +1,9 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
+import bot.commands.admincommands.LinkBotStatusCommand;
 import bot.commands.admincommands.SayCommand;
+import bot.commands.admincommands.SendAnnouncementCommand;
 import bot.commands.admincommands.StopBotCommand;
 import bot.commands.admincommands.UnbanCommand;
 import bot.commands.commandutil.AdminCommandManager;
@@ -25,6 +27,8 @@ import bot.gameutil.champions.champion.ChampionRegistry;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -46,6 +50,10 @@ public class Bot extends ListenerAdapter{
         System.out.println("Connecting Bot");
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
         System.out.println("Bot connected");
+
+        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(jda)){
+            c.sendMessage("Bot is connected").queue();
+        }
 
 
 
@@ -81,6 +89,8 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand(new SayCommand(),"say");
         adminCommands.addCommand( new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
+        adminCommands.addCommand(new LinkBotStatusCommand(), "link");
+        adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         jda.addEventListener(adminCommands);
 
 
@@ -95,6 +105,13 @@ public class Bot extends ListenerAdapter{
         //System.out.println(event.getMessage().getEmbeds().get(0).getFields().get(0).getName());
         if(event.getMessage().getContentRaw().toLowerCase().equals(name)){
             event.getChannel().sendMessage(":person_facepalming:the prefix for this bot is "+ manager.getPrefix()).queue();
+        }
+    }
+
+    @Override
+    public void onDisconnect(@Nonnull DisconnectEvent event) {
+        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
+            c.sendMessage("Bot is disconnected").queue();
         }
     }
 }

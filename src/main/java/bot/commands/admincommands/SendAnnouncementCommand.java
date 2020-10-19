@@ -5,19 +5,17 @@ import bot.commands.commandutil.CommandManager;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class StopBotCommand extends Command {
+public class SendAnnouncementCommand extends Command {
     @Override
     public String getHelp() {
-        return "Stops the bot";
+        return "Sends an announcement to all linked channels";
     }
-
 
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        for(TextChannel c: LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
-            c.sendMessage("Bot is shutting down now...").queue();
+        for(TextChannel t : LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
+            t.sendMessage(msg).queue();
         }
-        System.exit(0);
     }
 }
