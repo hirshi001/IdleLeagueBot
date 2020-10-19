@@ -108,8 +108,8 @@ public class Bot extends ListenerAdapter{
             event.getChannel().sendMessage(":person_facepalming:the prefix for this bot is "+ manager.getPrefix()).queue();
         }
     }
+a
 
-    
 
     @Override
     public void onDisconnect(@Nonnull DisconnectEvent event) {
