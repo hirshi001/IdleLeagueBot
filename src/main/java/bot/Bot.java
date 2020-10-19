@@ -30,6 +30,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.DisconnectEvent;
+import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -95,8 +96,6 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         jda.addEventListener(adminCommands);
 
-
-
         jda.addEventListener(this);
 
 
@@ -110,10 +109,19 @@ public class Bot extends ListenerAdapter{
         }
     }
 
+    
+
     @Override
     public void onDisconnect(@Nonnull DisconnectEvent event) {
         for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
             c.sendMessage("Bot is disconnected").queue();
+        }
+    }
+
+    @Override
+    public void onReconnect(@Nonnull ReconnectedEvent event) {
+        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
+            c.sendMessage("Bot is reconnected").queue();
         }
     }
 }
