@@ -13,8 +13,10 @@ import org.bson.Document;
 
 import javax.annotation.Nonnull;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -31,6 +33,19 @@ public class LinkBotStatusCommand extends Command {
 
         }
         return channels;
+    }
+
+    public static void forEachLinked(JDA jda, Consumer<TextChannel> consumer){
+        MongoCollection<Document> coll = MongoConnection.getChannelLinkCollection();
+        Iterator<Document> iter = coll.find().iterator();
+        while(iter.hasNext()){
+            try {
+                long id = iter.next().getLong("_id");
+                consumer.accept((TextChannel)jda.getGuildChannelById(id));
+            }catch(ClassCastException cce){
+                cce.printStackTrace();
+            }
+        }
     }
 
     @Override

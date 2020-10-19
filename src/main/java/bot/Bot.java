@@ -53,11 +53,8 @@ public class Bot extends ListenerAdapter{
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
         System.out.println("Bot connected");
 
-        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(jda)){
-            c.sendMessage("Bot is connected").queue();
-        }
 
-
+        LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
 
         name = jda.getSelfUser().getName().toLowerCase();
         manager = new NormalCommandManager(jda);
@@ -108,7 +105,6 @@ public class Bot extends ListenerAdapter{
             event.getChannel().sendMessage(":person_facepalming:the prefix for this bot is "+ manager.getPrefix()).queue();
         }
     }
-a
 
 
     @Override
