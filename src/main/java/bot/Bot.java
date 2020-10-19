@@ -28,6 +28,7 @@ import bot.gameutil.champions.champion.ChampionRegistry;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
@@ -51,6 +52,7 @@ public class Bot extends ListenerAdapter{
 
         System.out.println("Connecting Bot");
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
+        jda.getPresence().setActivity(Activity.playing("lol help"));
         System.out.println("Bot connected");
 
 
