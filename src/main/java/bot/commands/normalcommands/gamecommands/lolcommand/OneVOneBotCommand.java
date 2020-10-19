@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.lolcommand;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandActionWaiter;
@@ -14,12 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
 
 import javax.annotation.Nonnull;
-import javax.print.Doc;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;

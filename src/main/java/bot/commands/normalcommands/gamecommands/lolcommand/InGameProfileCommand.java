@@ -1,4 +1,4 @@
-package bot.commands.normalcommands;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
@@ -7,14 +7,10 @@ import bot.gameutil.champions.champion.Champion;
 import bot.gameutil.champions.champion.ChampionRegistry;
 import com.mongodb.client.MongoCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
 
 import java.awt.Color;
-import java.io.File;
-import java.net.URISyntaxException;
 
 import static com.mongodb.client.model.Filters.eq;
 

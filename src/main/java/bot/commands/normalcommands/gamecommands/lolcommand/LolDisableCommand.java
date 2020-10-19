@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.lolcommand;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
@@ -12,11 +12,11 @@ import org.bson.Document;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-public class LolEnableCommand extends Command {
+public class LolDisableCommand extends Command {
 
     @Override
     public String getHelp() {
-        return "Enables the lol command";
+        return "Disables the lol command";
     }
 
     @Override
@@ -27,12 +27,10 @@ public class LolEnableCommand extends Command {
         }
         MongoCollection<Document> channelCommands = MongoConnection.getDatabase().getCollection("channelcommands");
         Long channelId = event.getChannel().getIdLong();
-        UpdateResult result = channelCommands.updateOne(eq(channelId), set("lol", true));
+        UpdateResult result = channelCommands.updateOne(eq(channelId), set("lol", false));
         if(result.getMatchedCount()==0){
-            channelCommands.insertOne(new Document("_id", channelId).append("lol", true));
+            channelCommands.insertOne(new Document("_id", channelId).append("lol", false));
         }
-
-        event.getChannel().sendMessage("lol command enabled").queue();
-
+        event.getChannel().sendMessage("Lol command disabled").queue();
     }
 }

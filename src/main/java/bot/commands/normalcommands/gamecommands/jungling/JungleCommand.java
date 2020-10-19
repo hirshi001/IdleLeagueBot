@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.jungling;
+package bot.commands.normalcommands.gamecommands.jungling;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
 import bot.commands.normalcommands.Roasts;
@@ -6,7 +6,6 @@ import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.championexperience.ChampionExperience;
 import bot.gameutil.jungle.junglemobs.JungleMob;
-import com.mongodb.client.MongoCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;

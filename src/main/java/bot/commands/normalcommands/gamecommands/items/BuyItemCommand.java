@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.items;
+package bot.commands.normalcommands.gamecommands.items;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
@@ -16,7 +16,7 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-public class SellItemCommand extends Command {
+public class BuyItemCommand extends Command {
 
     @Override
     public boolean requiredInGame() {
@@ -25,53 +25,53 @@ public class SellItemCommand extends Command {
 
     @Override
     public String inGameRequireTitle() {
-        return "You must be in a game to sell items";
+        return "You must be in a game to buy items";
     }
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        if(true){
-            event.getChannel().sendMessage("this command is currently disabled").queue();
-            return;
-        }
+        MongoDatabase db = MongoConnection.getDatabase();
         msg = msg.toLowerCase();
         if(!ItemRegistry.containsItem(msg)){
             event.getChannel().sendMessage("This item doesn't exist").queue();
             return;
         }
-
-        MongoCollection<Document> usersCollection = MongoConnection.getOneVOneBotCollection();
+        MongoCollection<Document> oneVoneCollection = MongoConnection.getOneVOneBotCollection();
         Long id = event.getAuthor().getIdLong();
         Bson filter = eq(id);
 
-        Document d = usersCollection.find(filter).first().get("player", Document.class);
+        Document d = oneVoneCollection.find(filter).first().get("player", Document.class);
 
         List<Integer> items = d.getList("items", Integer.class);
 
-        Item itemToSell = ItemRegistry.getItem(msg);
-
-        if(!items.contains(itemToSell.getId())){
-            event.getChannel().sendMessage("You do not have this item").queue();
+        if(items.size()>=6){
+            event.getChannel().sendMessage("You have too many items to buy another one").queue();
             return;
         }
 
-        items.remove(itemToSell.getId());
+        Item itemToBuy = ItemRegistry.getItem(msg);
+
         int userMoney = d.getInteger("gold");
-        int itemSellPrice = itemToSell.getSellCost();
+        int itemCost = itemToBuy.getCost();
+        if(userMoney < itemCost){
+            event.getChannel().sendMessage("You do not have enough gold").queue();
+            return;
+        }
+        items.add(itemToBuy.getId());
+        userMoney-=itemCost;
 
-        userMoney+=itemSellPrice;
+        Bson updateOp = set("player.gold", userMoney);
+        oneVoneCollection.findOneAndUpdate(filter, updateOp);
 
-        Bson updateOp = set("gold", userMoney);
-        usersCollection.findOneAndUpdate(filter, updateOp);
+        updateOp = set("player.items", items);
+        oneVoneCollection.findOneAndUpdate(filter, updateOp);
 
-        updateOp = set("items", items);
-        usersCollection.findOneAndUpdate(filter, updateOp);
+        event.getChannel().sendMessage("You successfully bought a " +itemToBuy.getName()).queue();
 
-        event.getChannel().sendMessage("You successfully sold your " + itemToSell.getName() + " for "+itemSellPrice+" gold").queue();
     }
 
     @Override
     public String getHelp() {
-        return "sell an item";
+        return "buy an item";
     }
 }

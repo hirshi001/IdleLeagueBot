@@ -1,16 +1,12 @@
-package bot.commands.normalcommands.jungling;
+package bot.commands.normalcommands.gamecommands.jungling;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandActionWaiter;
 import bot.commands.commandutil.CommandManager;
-import bot.commands.normalcommands.DDragonImage;
 import bot.commands.normalcommands.Roasts;
 import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.championexperience.ChampionExperience;
-import bot.gameutil.jungle.junglemobs.JungleMob;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
@@ -22,7 +18,6 @@ import org.bson.conversions.Bson;
 import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
