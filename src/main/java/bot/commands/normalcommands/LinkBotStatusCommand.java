@@ -6,6 +6,7 @@ import bot.database.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -55,6 +56,10 @@ public class LinkBotStatusCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
+        if(!event.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)){
+            event.getChannel().sendMessage("You need the MANAGE_WEBHOOKS permission to use this command").queue();
+            return;
+        }
         long id = event.getChannel().getIdLong();
         MongoCollection<Document> coll = MongoConnection.getChannelLinkCollection();
 
