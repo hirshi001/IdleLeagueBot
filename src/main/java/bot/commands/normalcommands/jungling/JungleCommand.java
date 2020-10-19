@@ -2,6 +2,7 @@ package bot.commands.normalcommands.jungling;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
 import bot.commands.normalcommands.Roasts;
+import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.championexperience.ChampionExperience;
 import bot.gameutil.jungle.junglemobs.JungleMob;
@@ -19,11 +20,13 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.inc;
 import static com.mongodb.client.model.Updates.set;
 
 public class JungleCommand extends Command {
 
     Set<Long> jungling = Collections.synchronizedSet(new HashSet<Long>());
+    int jungleTime = 5;
     long initCooldownTime = (10*60)*1000;
 
 
@@ -41,137 +44,110 @@ public class JungleCommand extends Command {
     @Override
     public void commandCalled(String name, String msg, final GuildMessageReceivedEvent event, CommandManager commandManager) {
 
-        Long id = event.getAuthor().getIdLong();
+        long id = event.getAuthor().getIdLong();
 
-        MongoCollection<Document> userCollection =  MongoConnection.getOneVOneBotCollection();
+        //MongoCollection<Document> userCollection =  MongoConnection.getOneVOneBotCollection();
 
-        Bson filter = eq(id);
-        final Document document = userCollection.find(filter).first();
-        jungle(id, event, userCollection, document.get("player",Document.class));
+        jungle(id, event);
     }
 
-    private void jungle(Long id, GuildMessageReceivedEvent event, MongoCollection<Document> userCollection, Document d) {
-
-        Bson filter;
-        Bson updateOperation;
-
-        boolean currJungle = false;
-        synchronized (jungling){
-            if(jungling.contains(id)){
-                currJungle = true;
-            }
-        }
-
-        if(currJungle) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(Roasts.getRandomRoast());
-            sb.append("\nYour already jungling right now!!!");
-            event.getChannel().sendMessage(sb.toString()).queue();
-            return;
-
-        }
-
-        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
-        Document cooldownDoc = cooldownCollection.find(eq(id)).first();
-        assert cooldownDoc != null : "User doesn't have cooldownDoc?";
-        Long cooldownStart = cooldownDoc.getLong("jungle");
-        Integer cooldownLevel = cooldownDoc.getInteger("jungle cooldown level");
-
-        if(cooldownLevel==null){
-            filter = eq(id);
-            updateOperation = set("jungle cooldown level",0);
-            cooldownCollection.updateOne(filter,updateOperation);
-            cooldownLevel = 0;
-        }
-
-        long cooldownTime = initCooldownTime-getReducedCooldown(cooldownLevel);
-
-        if(cooldownStart!=null && cooldownStart+cooldownTime>System.currentTimeMillis()){
-            int secs = -(int)(System.currentTimeMillis()-cooldownStart-cooldownTime)/1000;
-            event.getChannel().sendMessage("Please wait "+secs+" seconds before jungling again").queue();
-            return;
-        }
 
 
-        //update jungling
+    private void jungle(long id, GuildMessageReceivedEvent event){
+
+        //check if the user is currently jungling
+       if(junglingCheck(id, event)) return;
+
+       //check if the users cooldown is over
+        if(cooldownCheck(id, event)) return;
+
+        //Player has passed all checks and can start jungling
         jungling.add(id);
-        //update cooldown
-        filter = eq(id);
-        updateOperation = set("jungle", System.currentTimeMillis());
-        cooldownCollection.updateOne(filter, updateOperation);
-
         AtomicReference<Message> messageSent = new AtomicReference<>();
+        event.getChannel().sendMessage("Jungling...").queue(messageSent::set);
 
-        event.getChannel().sendMessage("Jungling...").queue(message -> messageSent.set(message));
-
-        int jungleTime = 5;
+        Bson filter = eq(id);
 
         try {
             Thread.sleep(jungleTime*1000);
         } catch (InterruptedException e) {
-            event.getChannel().sendMessage("Jungling failed...").queue();
-            e.printStackTrace();
-        } finally {
+            event.getChannel().sendMessage("Jungle failed. See this:\n\t "+e.getMessage()).queue();
+            return;
+        }
+
+        MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("jungle",System.currentTimeMillis()+initCooldownTime));
 
 
-            JungleMob mob = JungleMob.getRandomMob();
+        JungleMob mob = JungleMob.getRandomMob();
 
-            int gold = d.getInteger("gold");
-            int level = d.getInteger("level");
-            int experience = d.getInteger("experience");
+        Document userDoc = GameAccount.getOneVOne(id);
+        Document d = userDoc.get("player", Document.class);
 
-            int mobLevel = level+(int)(Math.random()*3);
-            int goldEarned=mob.getGoldKill(mobLevel);
-            int experienceGained=mob.getExperience(mobLevel);
+        int gold = d.getInteger("gold");
+        int level = d.getInteger("level");
+        int experience = d.getInteger("experience");
 
-            gold+=goldEarned;
-            experience+=experienceGained;
+        int mobLevel = level+(int)(Math.random()*3);
+        int goldEarned=mob.getGoldKill(mobLevel);
+        int experienceGained=mob.getExperience(mobLevel);
 
-            int newLevel = level;
-            while(newLevel<18 && ChampionExperience.experienceToReachLevel(newLevel+1)<experience){
-                experience-=ChampionExperience.experienceToReachLevel(newLevel+1);
-                newLevel++;
-            }
+        gold+=goldEarned;
+        experience+=experienceGained;
 
-            filter = eq(id);
-            updateOperation = set("player.gold", gold);
-            userCollection.updateOne(filter, updateOperation);
-
-            updateOperation = set("player.level", newLevel);
-            userCollection.updateOne(filter, updateOperation);
-
-            updateOperation = set("player.experience", experience);
-            userCollection.updateOne(filter, updateOperation);
-
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("You now have ");
-            sb.append(gold);
-            sb.append(" gold.");
-
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setColor(Color.MAGENTA);
-
-            eb.setTitle("JUNGLE");
-            eb.setThumbnail(mob.getImageUrl());
-
-            eb.addField(mob.getName() + " Killed!", "You earned " + goldEarned + " gold and gained " + experienceGained + " experience", false);
-
-            if(newLevel!=level){
-                eb.addField("You are now level " + newLevel, "", false);
-            }
-
-
-            eb.addField(sb.toString(),"", false);
-            event.getChannel().sendMessage(eb.build()).queue();
+        int newLevel = level;
+        while(newLevel<18 && ChampionExperience.experienceToReachLevel(newLevel+1)<experience){
+            experience-=ChampionExperience.experienceToReachLevel(newLevel+1);
+            newLevel++;
         }
 
 
-        if(messageSent.get()!=null){
-            messageSent.get().delete().queue();
-        }
+        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.gold",gold));
+        if(newLevel!=level) MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.level",newLevel));
+        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,inc("player.experience",experience));
 
         jungling.remove(id);
+
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(Color.MAGENTA);
+
+        eb.setTitle("JUNGLE");
+        eb.setThumbnail(mob.getImageUrl());
+
+        eb.addField(mob.getName() + " Killed!", "You earned " + goldEarned + " gold and gained " + experienceGained + " experience", false);
+
+        if(newLevel!=level){
+            eb.addField("You are now level " + newLevel, "", false);
+        }
+        String sb = "You now have " +
+                gold +
+                " gold.";
+        eb.addField(sb,"", false);
+        event.getChannel().sendMessage(eb.build()).queue();
+
+
+        messageSent.get().delete().queue();
+
+    }
+
+    private boolean junglingCheck(long id, GuildMessageReceivedEvent event){
+        if(jungling.contains(id)){
+            StringBuilder sb = new StringBuilder(Roasts.getRandomRoast()).append("\n\"You are already jungling right now");
+            event.getChannel().sendMessage(sb).queue();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean cooldownCheck(long id, GuildMessageReceivedEvent event){
+        Document cooldownDoc = GameAccount.getCooldown(id);
+        long finishTime = cooldownDoc.getLong("jungle");
+        long currentTime = System.currentTimeMillis();
+        if(finishTime>currentTime){
+            int secs = (int)((finishTime-currentTime)/1000L);
+            event.getChannel().sendMessage("Please wait "+secs+" seconds before jungling again").queue();
+            return true;
+        }
+        return false;
     }
 
     @Override

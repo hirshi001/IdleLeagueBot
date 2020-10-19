@@ -17,6 +17,10 @@ public class GameAccount {
         return get(MongoConnection.getUsersCollection(),id);
     }
 
+    public static Document getCooldown(long id){
+        return get(MongoConnection.getCooldownsCollection(), id);
+    }
+
     public static Document get(MongoCollection<Document> coll,  long id){
         return coll.find(eq("_id",id)).first();
     }

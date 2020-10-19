@@ -4,8 +4,11 @@ import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandActionWaiter;
 import bot.commands.commandutil.CommandManager;
 import bot.commands.normalcommands.DDragonImage;
+import bot.commands.normalcommands.Roasts;
+import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.championexperience.ChampionExperience;
+import bot.gameutil.jungle.junglemobs.JungleMob;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -25,16 +28,18 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.inc;
 import static com.mongodb.client.model.Updates.set;
 
 public class BaronCommand extends Command {
 
-    private long baronTime = 10*1000;
+    private long baronTime = 10;
     private long initBaronCooldown = (20*60+30)*1000;
 
     final String baronUrl = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/15/Baron_Nashor_OriginalSkin.jpg/revision/latest?cb=20151202202626";
 
     private CommandActionWaiter askingToDoBaron;
+    private Set<Long> baroning = Collections.synchronizedSet(new HashSet<>());
 
     public BaronCommand(final JDA jda){
         askingToDoBaron = new CommandActionWaiter(15 * 1000L);
@@ -45,28 +50,16 @@ public class BaronCommand extends Command {
         return coolDownLevel*30*1000L;
     }
 
-    @Override
-    public boolean requiresLiving() {
-        return true;
-    }
-
-    @Override
-    public String requiresLivingTitle() {
-        return "You must be alive in order to do baron";
-    }
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
 
-        final Long id = event.getAuthor().getIdLong();
-        if(askingToDoBaron.contains(id)){
-            askingToDoBaron.remove(id);
-            return;
-        }
+        final long id = event.getAuthor().getIdLong();
+        if(askingToDoBaron.contains(id)) return;
 
-        MongoCollection<Document> userCollection = MongoConnection.getOneVOneBotCollection();
-        Document userDoc = userCollection.find(eq(id)).first().get("player", Document.class);
-        int level = userDoc.getInteger("level");
+        Document userDoc = GameAccount.getOneVOne(id);
+        Document d = userDoc.get("player", Document.class);
+        int level = d.getInteger("level");
 
         if(level <=12 ){
             event.getChannel().sendMessage("You level is too low, there is a good change of dying.\nAre you sure you want to do baron? (y/yes or n/no)\n(respond in 15 seconds)").queue();
@@ -74,12 +67,12 @@ public class BaronCommand extends Command {
             return;
         }
 
-        baron(id, event, userDoc);
+        baron(id, event);
     }
 
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        long id = event.getAuthor().getIdLong();
+    public void onGuildMessageReceived(@Nonnull final GuildMessageReceivedEvent event) {
+        final long id = event.getAuthor().getIdLong();
         if(askingToDoBaron.contains(id, event.getChannel().getIdLong())){
             String msg = event.getMessage().getContentRaw();
             if(msg.equalsIgnoreCase("y") || msg.equalsIgnoreCase("yes")){
@@ -92,97 +85,114 @@ public class BaronCommand extends Command {
         }
     }
 
-    private void baron(Long id, GuildMessageReceivedEvent event){
-        baron(id, event, MongoConnection.getOneVOneBotCollection().find(eq(id)).first().get("player", Document.class));
-    }
 
-    private void baron(Long id, GuildMessageReceivedEvent event, Document userDoc){
+    private void baron(long id, GuildMessageReceivedEvent event){
 
-        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
-        Document cooldownDoc = cooldownCollection.find(eq(id)).first();
-        Long startCooldown = cooldownDoc.getLong("baron");
-        Integer cooldownLevel = cooldownDoc.getInteger("jungle cooldown level");
-        if(cooldownLevel==null){
-            cooldownCollection.updateOne(eq(id), set("jungle cooldown level", 0));
-            cooldownLevel=0;
-        }
-        long cooldownTime = initBaronCooldown-getReducedCooldown(cooldownLevel);
+        //check if the user is currently jungling
+        if(baroningCheck(id, event)) return;
 
-        long finishTime = System.currentTimeMillis();
-        if(startCooldown!=null && startCooldown+cooldownTime>finishTime) {
-            int seconds = -(int) (finishTime - (startCooldown + cooldownTime)) / 1000;
-            event.getChannel().sendMessage("Please wait " + seconds + " seconds before attacking baron").queue();
+        //check if the users cooldown is over
+        if(cooldownCheck(id, event)) return;
+
+        //Player has passed all checks and can start jungling
+        baroning.add(id);
+        AtomicReference<Message> messageSent = new AtomicReference<>();
+        event.getChannel().sendMessage("Doing Baron...").queue(messageSent::set);
+
+        Bson filter = eq(id);
+        System.out.println(baronTime*1000);
+        try {
+            Thread.sleep(baronTime*1000);
+        } catch (InterruptedException e) {
+            event.getChannel().sendMessage("Baron attempt failed. See this:\n\t "+e.getMessage()).queue();
             return;
         }
-        cooldownCollection.updateOne(eq(id), set("baron",System.currentTimeMillis()));
+
+        MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("baron",System.currentTimeMillis()+initBaronCooldown));
 
 
-        MongoCollection<Document> userCollection = MongoConnection.getOneVOneBotCollection();
+        //JungleMob mob = JungleMob.getRandomMob();
 
-        AtomicReference<Message> messageSent = new AtomicReference<>();
+        Document userDoc = GameAccount.getOneVOne(id);
+        Document d = userDoc.get("player",Document.class);
 
-        event.getChannel().sendMessage("fighting baron...").queue((messageSent::set));
+        int gold = d.getInteger("gold");
+        int level = d.getInteger("level");
+        int experience = d.getInteger("experience");
 
-        try {
-            Thread.sleep(baronTime);
-            messageSent.get().delete();
+        int goldEarned = 600;
+        int experienceEarned = 700;
 
-            int experience = userDoc.getInteger("experience");
-            int gold = userDoc.getInteger("gold");
-            int level = userDoc.getInteger("level");
+        gold+=goldEarned;
+        experience+=experienceEarned;
 
-            int goldEarned = 600;
-            int experienceEarned = 700;
-
-            gold+=goldEarned;
-            experience+=experienceEarned;
-            int newLevel = level;
-
-            while(newLevel<18 && ChampionExperience.experienceToReachLevel(newLevel+1)<experience){
-                experience-=ChampionExperience.experienceToReachLevel(newLevel+1);
-                newLevel++;
-            }
-
-            Bson filter, updateOperation;
-
-            filter = eq(id);
-
-            updateOperation = set("player.gold", gold);
-            userCollection.updateOne(filter, updateOperation);
-
-            updateOperation = set("player.level", newLevel);
-            userCollection.updateOne(filter, updateOperation);
-
-            updateOperation = set("player.experience", experience);
-            userCollection.updateOne(filter, updateOperation);
-
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("You now have ");
-            sb.append(gold);
-            sb.append(" gold.");
-
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setColor(Color.MAGENTA);
-
-            eb.setTitle("JUNGLE");
-            eb.setThumbnail(baronUrl);
-
-            eb.addField( "Baron Killed!", "You earned " + goldEarned + " gold and gained " + experienceEarned + " experience", false);
-
-            if(newLevel!=level){
-                eb.addField("You are now level " + newLevel, "", false);
-            }
-            event.getChannel().sendMessage(eb.build()).queue();
-
-
-        } catch (InterruptedException e) {
-            event.getChannel().sendMessage("attempt failed due to glitch in the system").queue();
+        int newLevel = level;
+        while(newLevel<18 && ChampionExperience.experienceToReachLevel(newLevel+1)<experience){
+            experience-=ChampionExperience.experienceToReachLevel(newLevel+1);
+            newLevel++;
         }
+
+
+        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.gold",gold));
+        if(newLevel!=level) MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.level",newLevel));
+        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,inc("player.experience",experience));
+
+        baroning.remove(id);
+
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(Color.MAGENTA);
+
+        eb.setTitle("JUNGLE");
+        eb.setThumbnail(baronUrl);
+
+        eb.addField("Baron Killed!", "You earned " + goldEarned + " gold and gained " + experienceEarned + " experience", false);
+
+        if(newLevel!=level){
+            eb.addField("You are now level " + newLevel, "", false);
+        }
+        String sb = "You now have " +
+                gold +
+                " gold.";
+        eb.addField(sb,"", false);
+        event.getChannel().sendMessage(eb.build()).queue();
+
 
         messageSent.get().delete().queue();
 
     }
+
+    private boolean baroningCheck(long id, GuildMessageReceivedEvent event){
+        if(baroning.contains(id)){
+            StringBuilder sb = new StringBuilder(Roasts.getRandomRoast()).append("\n\"You are already doing baron right now");
+            event.getChannel().sendMessage(sb).queue();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean cooldownCheck(long id, GuildMessageReceivedEvent event){
+        Document cooldownDoc = GameAccount.getCooldown(id);
+        long finishTime = cooldownDoc.getLong("baron");
+        long currentTime = System.currentTimeMillis();
+        if(finishTime>currentTime){
+            int secs = (int)((finishTime-currentTime)/1000L);
+            event.getChannel().sendMessage("Please wait "+secs+" seconds before doing baron again").queue();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean requiresLiving() {
+        return true;
+    }
+
+    @Override
+    public String requiresLivingTitle() {
+        return "You must be alive in order to do baron";
+    }
+
+
 
     @Override
     public String getHelp() {
