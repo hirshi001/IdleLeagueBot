@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.items;
+package bot.commands.normalcommands.gamecommands.items;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;

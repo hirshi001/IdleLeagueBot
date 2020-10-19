@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.lolcommand;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;

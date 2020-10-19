@@ -1,20 +1,15 @@
-package bot.commands.normalcommands;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
-import bot.commands.normalcommands.lolcommand.OneVOneBotCommand;
 import bot.database.MongoConnection;
-import bot.gameutil.LaneConstants;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import static com.mongodb.client.model.Filters.eq;

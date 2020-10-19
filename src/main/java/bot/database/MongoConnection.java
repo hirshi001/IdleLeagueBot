@@ -20,6 +20,7 @@ public class MongoConnection {
     private static MongoCollection<Document> BANNED;
     private static MongoCollection<Document> ADMINS;
     private static MongoCollection<Document> CHANNEL_COMMANDS;
+    private static MongoCollection<Document> CHANNEL_LINK;
 
 
     public static void setup(String name, String password, String dbname){
@@ -32,6 +33,7 @@ public class MongoConnection {
         BANNED = DATABASE.getCollection("banned");
         ADMINS = DATABASE.getCollection("admins");
         CHANNEL_COMMANDS = DATABASE.getCollection("channelcommands");
+        CHANNEL_LINK = DATABASE.getCollection("channellink");
     }
 
 
@@ -59,9 +61,9 @@ public class MongoConnection {
         return ADMINS;
     }
 
-    public static MongoCollection<Document> getChannelCommandsCollection(){
-        return CHANNEL_COMMANDS;
-    }
+    public static MongoCollection<Document> getChannelCommandsCollection(){ return CHANNEL_COMMANDS; }
+
+    public static MongoCollection<Document> getChannelLinkCollection(){ return CHANNEL_LINK; }
 
 
 }
