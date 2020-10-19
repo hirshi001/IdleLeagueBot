@@ -3,6 +3,7 @@ package bot.commands.normalcommands;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
 import bot.database.MongoConnection;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -16,6 +17,10 @@ public class UnlinkBotStatusCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
+        if(event.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)){
+            event.getChannel().sendMessage("You need the MANAGE_WEBHOOKS permission to use this command").queue();
+            return;
+        }
         if(MongoConnection.getChannelLinkCollection().findOneAndDelete(eq(event.getChannel().getIdLong()))==null){
             event.getChannel().sendMessage("This channel was never even linked").queue();
         }
