@@ -6,6 +6,7 @@ import bot.commands.admincommands.SayCommand;
 import bot.commands.admincommands.SendAnnouncementCommand;
 import bot.commands.admincommands.StopBotCommand;
 import bot.commands.admincommands.UnbanCommand;
+import bot.commands.admincommands.UnlinkBotStatusCommand;
 import bot.commands.commandutil.AdminCommandManager;
 import bot.commands.commandutil.NormalCommandManager;
 import bot.commands.normalcommands.InviteLink;
@@ -90,6 +91,7 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand( new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
         adminCommands.addCommand(new LinkBotStatusCommand(), "link");
+        adminCommands.addCommand(new UnlinkBotStatusCommand(), "unlink");
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         jda.addEventListener(adminCommands);
 
