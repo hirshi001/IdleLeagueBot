@@ -78,6 +78,8 @@ public class Bot extends ListenerAdapter{
         manager.addCommand( new SellItemCommand(), "sell");
 
         manager.addCommand(new InviteLink(), "invitelink");
+        manager.addCommand(new LinkBotStatusCommand(), "link");
+        manager.addCommand(new UnlinkBotStatusCommand(), "unlink");
 
         //manager.addCommand("help");
         jda.addEventListener(manager);
@@ -90,8 +92,6 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand(new SayCommand(),"say");
         adminCommands.addCommand( new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
-        adminCommands.addCommand(new LinkBotStatusCommand(), "link");
-        adminCommands.addCommand(new UnlinkBotStatusCommand(), "unlink");
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         jda.addEventListener(adminCommands);
 
