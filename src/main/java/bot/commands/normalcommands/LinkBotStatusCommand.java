@@ -56,7 +56,7 @@ public class LinkBotStatusCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        if(!event.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)){
+        if(!event.getMember().hasPermission(Permission.MANAGE_WEBHOOKS) || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
             event.getChannel().sendMessage("You need the MANAGE_WEBHOOKS permission to use this command").queue();
             return;
         }
