@@ -1,4 +1,4 @@
-package bot.gameutil;
+package bot.database;
 
 import bot.database.MongoConnection;
 import com.mongodb.client.MongoCollection;
