@@ -38,8 +38,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if(event.isWebhookMessage()) return;
-        long millisTime = System.currentTimeMillis();
+        if(event.isWebhookMessage() || event.getAuthor().isBot() || event.getAuthor().isFake()) return;
         long id = event.getAuthor().getIdLong();
         if(id==event.getJDA().getSelfUser().getIdLong()) return;
 

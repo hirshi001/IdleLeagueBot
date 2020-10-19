@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
+import bot.commands.normalcommands.DiscordCommand;
 import bot.commands.normalcommands.LinkBotStatusCommand;
 import bot.commands.admincommands.SayCommand;
 import bot.commands.admincommands.SendAnnouncementCommand;
@@ -80,6 +81,8 @@ public class Bot extends ListenerAdapter{
         manager.addCommand(new InviteLink(), "invitelink");
         manager.addCommand(new LinkBotStatusCommand(), "link");
         manager.addCommand(new UnlinkBotStatusCommand(), "unlink");
+
+        manager.addCommand(new DiscordCommand(), "discord");
 
         //manager.addCommand("help");
         jda.addEventListener(manager);

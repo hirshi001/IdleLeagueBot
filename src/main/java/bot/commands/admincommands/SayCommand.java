@@ -8,8 +8,8 @@ public class SayCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        event.getMessage().delete().queue();
         event.getChannel().sendMessage(msg).queue();
+        event.getMessage().delete().queue();
     }
 
     @Override
