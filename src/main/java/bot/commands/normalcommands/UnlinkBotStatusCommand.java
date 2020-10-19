@@ -1,4 +1,4 @@
-package bot.commands.admincommands;
+package bot.commands.normalcommands;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;

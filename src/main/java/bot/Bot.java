@@ -1,12 +1,12 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
-import bot.commands.admincommands.LinkBotStatusCommand;
+import bot.commands.normalcommands.LinkBotStatusCommand;
 import bot.commands.admincommands.SayCommand;
 import bot.commands.admincommands.SendAnnouncementCommand;
 import bot.commands.admincommands.StopBotCommand;
 import bot.commands.admincommands.UnbanCommand;
-import bot.commands.admincommands.UnlinkBotStatusCommand;
+import bot.commands.normalcommands.UnlinkBotStatusCommand;
 import bot.commands.commandutil.AdminCommandManager;
 import bot.commands.commandutil.NormalCommandManager;
 import bot.commands.normalcommands.InviteLink;
