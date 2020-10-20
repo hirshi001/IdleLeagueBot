@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -109,6 +110,11 @@ public class Bot extends ListenerAdapter{
         jda.addEventListener(adminCommands);
 
         jda.addEventListener(this);
+        printNumberOfGuilds();
+    }
+
+    @Override
+    public void onGuildLeave(@Nonnull GuildLeaveEvent event) {
         printNumberOfGuilds();
     }
 
