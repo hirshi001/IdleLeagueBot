@@ -49,11 +49,8 @@ public class Bot extends ListenerAdapter{
 
     private CommandManager manager;
     public Bot(String token) throws LoginException, InterruptedException {
-        System.out.println("Registering Champs");
         ChampionRegistry.registerAllChampions();
-        System.out.println("Champs finished registering");
 
-        System.out.println("Connecting Bot");
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
 
         jda.getPresence().setActivity(Activity.playing("lol help"));
