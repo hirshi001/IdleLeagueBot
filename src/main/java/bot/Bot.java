@@ -141,13 +141,5 @@ public class Bot extends ListenerAdapter{
         }
     }
 
-    @Override
-    public void onShutdown(@Nonnull ShutdownEvent event) {
-        sendShuttingDown();
-    }
 
-    private void sendShuttingDown(){
-        LinkBotStatusCommand.forEachLinked(jda, (c) -> c.sendMessage("Bot is shutting down...").queue());
-
-    }
 }
