@@ -110,7 +110,7 @@ public class Bot extends ListenerAdapter{
 
         jda.addEventListener(this);
 
-
+        System.out.println(jda.getGuilds().size());
     }
 
     @Override
@@ -145,6 +145,11 @@ public class Bot extends ListenerAdapter{
 
     @Override
     public void onShutdown(@Nonnull ShutdownEvent event) {
-        LinkBotStatusCommand.forEachLinked(event.getJDA(), (c) -> c.sendMessage("Bot is shutting down...").queue());
+        sendShuttingDown();
+    }
+
+    private void sendShuttingDown(){
+        LinkBotStatusCommand.forEachLinked(jda, (c) -> c.sendMessage("Bot is shutting down...").queue());
+
     }
 }
