@@ -88,9 +88,4 @@ public class HelpCommand extends Command {
         eb.setFooter("Page "+page+" out of "+pages);
         event.getChannel().sendMessage(eb.build()).queue();
     }
-
-    @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
-        event.getChannel().sendMessage("Hi").queue();
-    }
 }

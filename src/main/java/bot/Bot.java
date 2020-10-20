@@ -55,6 +55,7 @@ public class Bot extends ListenerAdapter{
 
         System.out.println("Connecting Bot");
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
+
         jda.getPresence().setActivity(Activity.playing("lol help"));
         System.out.println("Bot connected");
 
@@ -66,12 +67,16 @@ public class Bot extends ListenerAdapter{
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
         manager.addCommand( new CreateAccountCommand(),"createaccount");
+
         manager.addCommand(new OneVOneBotCommand(jda),"onevonebot");
         manager.addCommand(new InGameProfileCommand(manager), "gameprofile", "gamep", "gp");
+
         manager.addCommand( new ResetCommand(),"reset");
         manager.addCommand( new JungleCommand(),"jungle", "jg");
         manager.addCommand( new HelpCommand(),"help", "h");
         manager.addCommand(new BaronCommand(jda), "baron");
+
+
 
         manager.addCommand( new LolEnableCommand(), "enablelol");
         manager.addCommand( new LolDisableCommand(),"disablelol");
@@ -86,8 +91,11 @@ public class Bot extends ListenerAdapter{
 
         manager.addCommand(new DiscordCommand(), "discord");
 
+
+
         //manager.addCommand("help");
         jda.addEventListener(manager);
+
 
         CommandManager adminCommands = new AdminCommandManager(jda);
         adminCommands.setPrefix("adminlol");
