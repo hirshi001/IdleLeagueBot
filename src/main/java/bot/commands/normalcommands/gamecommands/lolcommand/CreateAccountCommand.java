@@ -28,10 +28,6 @@ public class CreateAccountCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        if (event.getAuthor().isFake()) {
-            event.getChannel().sendMessage("Shut up you fake").queue();
-            return;
-        }
 
         final Long id = event.getAuthor().getIdLong();
         MongoCollection<Document> collection = MongoConnection.getUsersCollection();
