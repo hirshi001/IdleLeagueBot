@@ -65,5 +65,9 @@ public class MongoConnection {
 
     public static MongoCollection<Document> getChannelLinkCollection(){ return CHANNEL_LINK; }
 
+    public static void close(){
+        CLIENT.close();
+    }
+
 
 }
