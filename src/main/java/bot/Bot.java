@@ -25,6 +25,7 @@ import bot.commands.normalcommands.gamecommands.jungling.JungleCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.InGameProfileCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.CreateAccountCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.OneVOneBotCommand;
+import bot.database.MongoConnection;
 import bot.gameutil.champions.champion.ChampionRegistry;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -139,6 +140,11 @@ public class Bot extends ListenerAdapter{
         for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
             c.sendMessage("Bot is reconnected").queue();
         }
+    }
+
+    @Override
+    public void onShutdown(@Nonnull ShutdownEvent event) {
+        MongoConnection.close();
     }
 
 
