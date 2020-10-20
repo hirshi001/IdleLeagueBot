@@ -52,6 +52,7 @@ public class Bot extends ListenerAdapter{
         ChampionRegistry.registerAllChampions();
 
         jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
+        LinkBotStatusCommand.cache(jda); //this method needs instance of jda to get the text channels
 
         jda.getPresence().setActivity(Activity.playing("lol help"));
         System.out.println("Bot connected");
