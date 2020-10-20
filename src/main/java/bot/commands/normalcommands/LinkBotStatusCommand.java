@@ -14,6 +14,7 @@ import org.bson.Document;
 
 import javax.annotation.Nonnull;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,9 +24,11 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class LinkBotStatusCommand extends Command {
 
-    public static List<TextChannel> getLinkedChannels(JDA jda){
+
+    private static final List<TextChannel> channels = Collections.synchronizedList(new LinkedList<>());
+
+    public static void cache(JDA jda){
         MongoCollection<Document> coll = MongoConnection.getChannelLinkCollection();
-        LinkedList<TextChannel> channels = new LinkedList<>();
         for (MongoCursor<Document> it = coll.find().iterator(); it.hasNext(); ) {
             Document d = it.next();
             try{
@@ -33,20 +36,43 @@ public class LinkBotStatusCommand extends Command {
             } catch (ClassCastException cce){cce.printStackTrace();}
 
         }
+    }
+
+    public static List<TextChannel> getLinkedChannels(JDA jda){
         return channels;
     }
 
-    public static void forEachLinked(JDA jda, Consumer<TextChannel> consumer){
-        MongoCollection<Document> coll = MongoConnection.getChannelLinkCollection();
-        Iterator<Document> iter = coll.find().iterator();
+
+    public static void forEachLinked(JDA jda, Consumer<TextChannel> consumer) {
+        Iterator<TextChannel> iter = channels.iterator();
         while(iter.hasNext()){
+            TextChannel c = iter.next();
             try {
-                long id = iter.next().getLong("_id");
-                consumer.accept((TextChannel)jda.getGuildChannelById(id));
-            }catch(ClassCastException cce){
-                cce.printStackTrace();
+                consumer.accept(c);
+            }catch(Exception e){
+                if(jda.getGuildChannelById(c.getIdLong())==null){
+                    removeChannelFromDB(c);
+                    iter.remove();
+                }
+                throw e;
             }
         }
+    }
+
+    public static void removeChannel(TextChannel c){
+        removeChannelFromDB(c);
+        Iterator<TextChannel> iter = channels.iterator();
+        while(iter.hasNext()) {
+            TextChannel tc = iter.next();
+            if(tc.getIdLong()==c.getIdLong()){
+                iter.remove();
+                return;
+            }
+        }
+    }
+
+    public static void removeChannelFromDB(TextChannel c){
+        MongoConnection.getChannelLinkCollection().findOneAndDelete(eq(c.getIdLong()));
     }
 
     @Override
@@ -66,6 +92,7 @@ public class LinkBotStatusCommand extends Command {
         if(coll.find(eq("_id", id)).first()==null){
             if(coll.insertOne(new Document("_id", id)).wasAcknowledged()){
                 event.getChannel().sendMessage("Link succesful").queue();
+                channels.add(event.getChannel());
             }
             else{
                 event.getChannel().sendMessage("Link not succesful").queue();

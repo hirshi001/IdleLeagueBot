@@ -26,6 +26,7 @@ public class UnlinkBotStatusCommand extends Command {
         }
         else{
             event.getChannel().sendMessage("This channel has been succesfully unlinked").queue();
+            LinkBotStatusCommand.removeChannel(event.getChannel());
         }
     }
 }
