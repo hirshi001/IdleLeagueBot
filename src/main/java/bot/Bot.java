@@ -65,24 +65,24 @@ public class Bot extends ListenerAdapter{
         manager = new NormalCommandManager(jda);
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
-        manager.addCommand( new CreateAccountCommand(),"createaccount");
+        manager.addCommand(new CreateAccountCommand(),"createaccount");
 
         manager.addCommand(new OneVOneBotCommand(jda),"onevonebot");
         manager.addCommand(new InGameProfileCommand(manager), "gameprofile", "gamep", "gp");
 
-        manager.addCommand( new ResetCommand(),"reset");
-        manager.addCommand( new JungleCommand(),"jungle", "jg");
-        manager.addCommand( new HelpCommand(),"help", "h");
+        manager.addCommand(new ResetCommand(),"reset");
+        manager.addCommand(new JungleCommand(),"jungle", "jg");
+        manager.addCommand(new HelpCommand(),"help", "h");
         manager.addCommand(new BaronCommand(jda), "baron");
 
 
 
-        manager.addCommand( new LolEnableCommand(), "enablelol");
-        manager.addCommand( new LolDisableCommand(),"disablelol");
+        manager.addCommand(new LolEnableCommand(), "enablelol");
+        manager.addCommand(new LolDisableCommand(),"disablelol");
 
-        manager.addCommand( new BuyItemCommand(),"buy");
-        manager.addCommand( new ShowItemsCommand(), "items");
-        manager.addCommand( new SellItemCommand(), "sell");
+        manager.addCommand(new BuyItemCommand(),"buy");
+        manager.addCommand(new ShowItemsCommand(), "items");
+        manager.addCommand(new SellItemCommand(), "sell");
 
         manager.addCommand(new InviteLink(), "invitelink");
         manager.addCommand(new LinkBotStatusCommand(), "link");
@@ -99,10 +99,10 @@ public class Bot extends ListenerAdapter{
         CommandManager adminCommands = new AdminCommandManager(jda);
         adminCommands.setPrefix("adminlol");
         adminCommands.setDefaultCommand(new DefaultCommand());
-        adminCommands.addCommand( new BanCommand(),"ban");
+        adminCommands.addCommand(new BanCommand(),"ban");
         adminCommands.addCommand(new UnbanCommand(),"unban");
         adminCommands.addCommand(new SayCommand(),"say");
-        adminCommands.addCommand( new HelpCommand(),"help");
+        adminCommands.addCommand(new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         jda.addEventListener(adminCommands);
