@@ -22,6 +22,7 @@ public class StopBotCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
+        LinkBotStatusCommand.forEachLinked(event.getJDA(), (c) -> c.sendMessage("Bot is shutting down...").queue());
         event.getJDA().shutdown();
     }
 
