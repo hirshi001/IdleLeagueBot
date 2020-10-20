@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -108,8 +109,16 @@ public class Bot extends ListenerAdapter{
         jda.addEventListener(adminCommands);
 
         jda.addEventListener(this);
+        printNumberOfGuilds();
+    }
 
-        System.out.println(jda.getGuilds().size());
+    @Override
+    public void onGuildJoin(@Nonnull GuildJoinEvent event) {
+        printNumberOfGuilds();
+    }
+
+    private void printNumberOfGuilds(){
+        System.out.println("The bot is in " + jda.getGuilds().size() + " servers.");
     }
 
     @Override
