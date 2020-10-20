@@ -33,6 +33,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
+import net.dv8tion.jda.api.events.ResumedEvent;
+import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -120,9 +122,21 @@ public class Bot extends ListenerAdapter{
     }
 
     @Override
+    public void onResume(@Nonnull ResumedEvent event) {
+        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
+            c.sendMessage("Bot is resumed").queue();
+        }
+    }
+
+    @Override
     public void onReconnect(@Nonnull ReconnectedEvent event) {
         for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
             c.sendMessage("Bot is reconnected").queue();
         }
+    }
+
+    @Override
+    public void onShutdown(@Nonnull ShutdownEvent event) {
+        LinkBotStatusCommand.forEachLinked(event.getJDA(), (c) -> c.sendMessage("Bot is shutting down...").queue());
     }
 }
