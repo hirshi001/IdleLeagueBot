@@ -130,7 +130,7 @@ public class Bot extends ListenerAdapter{
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         //System.out.println(event.getMessage().getEmbeds().get(0).getFields().get(0).getName());
-        if(event.getMessage().getContentRaw().toLowerCase().equals(name)){
+        if(event.getMessage().getContentRaw().equalsIgnoreCase(name)){
             event.getChannel().sendMessage(":person_facepalming:the prefix for this bot is "+ manager.getPrefix()).queue();
         }
     }
