@@ -5,7 +5,17 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public abstract class Command extends ListenerAdapter implements ICommand {
 
+    private Arguments args = Arguments.DEFAULT_ARGUMENTS;
+
     public abstract String getHelp();
+
+    public Arguments getArguments(){
+        return args;
+    }
+
+    public void setArguments(Arguments args){
+        this.args = args;
+    }
 
 
     @Override

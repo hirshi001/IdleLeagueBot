@@ -48,7 +48,7 @@ public class HelpCommand extends Command {
             event.getChannel().sendMessage(map.get(msg).getHelpPage()).queue();
         }
         else if(commandManager.getCommandsMap().containsKey(msg)){
-            event.getChannel().sendMessage(commandManager.getCommandsMap().get(msg).command.getHelp()).queue();
+            event.getChannel().sendMessage(commandManager.getCommandsMap().get(msg).helpEmbed).queue();
         }
         else{
             event.getChannel().sendMessage(helpPage).queue();
