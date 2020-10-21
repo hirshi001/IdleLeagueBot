@@ -5,6 +5,7 @@ import bot.commands.commandutil.CommandManager;
 import bot.database.GameAccount;
 import bot.gameutil.Location;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.bson.Document;
 
 public class GetLocationCommand extends Command {
     @Override
@@ -15,8 +16,9 @@ public class GetLocationCommand extends Command {
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
         GameAccount ga = new GameAccount(event.getAuthor().getIdLong());
-        ga.regenerateDoc();
-        event.getChannel().sendMessage("You are at "+Location.get(ga.getDoc().getInteger("location")).getName()).queue();
+        Document d = (Document)ga.getDoc().get("player");
+
+        event.getChannel().sendMessage("You are at "+Location.get(d.getInteger("location")).getName()).queue();
     }
 
     @Override

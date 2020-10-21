@@ -24,7 +24,7 @@ public class GameAccount {
     }
 
     public static Document get(MongoCollection<Document> coll,  long id){
-        return coll.find(eq("_id",id)).first();
+        return coll.find(eq(id)).first();
     }
 
     private final long id;
