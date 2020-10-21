@@ -1,5 +1,6 @@
 package bot.commands.normalcommands.gamecommands.items;
 
+import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
 import bot.database.MongoConnection;
@@ -18,6 +19,10 @@ import static com.mongodb.client.model.Updates.set;
 
 public class BuyItemCommand extends Command {
 
+    public BuyItemCommand(){
+        setArguments(new Arguments().addArgument("item name", false).update());
+    }
+
     @Override
     public boolean requiredInGame() {
         return true;
@@ -30,7 +35,6 @@ public class BuyItemCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        MongoDatabase db = MongoConnection.getDatabase();
         msg = msg.toLowerCase();
         if(!ItemRegistry.containsItem(msg)){
             event.getChannel().sendMessage("This item doesn't exist").queue();

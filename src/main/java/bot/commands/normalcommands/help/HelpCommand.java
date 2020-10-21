@@ -1,5 +1,6 @@
 package bot.commands.normalcommands.help;
 
+import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandEntry;
 import bot.commands.commandutil.CommandManager;
@@ -22,6 +23,11 @@ public class HelpCommand extends Command {
             map.put(hs.getName().toLowerCase(), hs);
         }
         createHelpPage(helpSections);
+
+        Arguments args = new Arguments().addArgument("command/section name", true);
+        args.update();
+        setArguments(args);
+
     }
 
     private void createHelpPage(HelpSection[] arr){
@@ -34,7 +40,6 @@ public class HelpCommand extends Command {
         }
         helpPage = eb.build();
     }
-
 
     @Override
     public String getHelp() {

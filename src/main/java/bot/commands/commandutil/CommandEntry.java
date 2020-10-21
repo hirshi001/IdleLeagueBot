@@ -27,7 +27,7 @@ public class CommandEntry{
         eb.setColor(Color.GREEN);
         eb.setTitle(defaultName + " command");
         eb.setDescription(command.getHelp());
-        eb.addField("How to call this command", "`" + prefix+ " " +defaultName+" " + command.getArguments().toString()+ "`", true);
+        eb.addField("How to call this command", "<...> - optional\n[...] - required\n`" + prefix+ " " +defaultName+" " + command.getArguments().toString()+ "`", true);
         StringBuilder sb = new StringBuilder();
         for(String name:names){
             sb.append(name).append("\n");

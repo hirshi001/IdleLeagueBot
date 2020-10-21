@@ -19,13 +19,14 @@ public class Arguments {
         return this;
     }
 
-    public void update(){
+    public Arguments update(){
         StringBuilder sb = new StringBuilder();
         for(Argument arg : args){
             if(arg.isOptional()) sb.append("<").append(arg.getName()).append(">");
             else sb.append("[").append(arg.getName()).append("]");
         }
         finalString = sb.toString();
+        return this;
     }
 
     @Override

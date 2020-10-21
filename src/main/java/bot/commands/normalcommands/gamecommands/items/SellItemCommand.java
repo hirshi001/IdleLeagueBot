@@ -1,5 +1,6 @@
 package bot.commands.normalcommands.gamecommands.items;
 
+import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
 import bot.database.MongoConnection;
@@ -16,6 +17,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
 public class SellItemCommand extends Command {
+
+    public SellItemCommand(){
+        setArguments(new Arguments().addArgument("item name", false).update());
+    }
 
     @Override
     public boolean requiredInGame() {
