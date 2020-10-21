@@ -3,6 +3,7 @@ package bot.commands.normalcommands.gamecommands.items;
 import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.items.Item;
 import bot.gameutil.items.ItemRegistry;
@@ -34,21 +35,15 @@ public class SellItemCommand extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        if(true){
-            event.getChannel().sendMessage("this command is currently disabled").queue();
-            return;
-        }
         msg = msg.toLowerCase();
         if(!ItemRegistry.containsItem(msg)){
             event.getChannel().sendMessage("This item doesn't exist").queue();
             return;
         }
 
-        MongoCollection<Document> usersCollection = MongoConnection.getOneVOneBotCollection();
-        Long id = event.getAuthor().getIdLong();
-        Bson filter = eq(id);
+        GameAccount ga = new GameAccount(event.getAuthor().getIdLong());
 
-        Document d = usersCollection.find(filter).first().get("player", Document.class);
+        Document d = (Document)ga.getDoc().get("player");
 
         List<Integer> items = d.getList("items", Integer.class);
 
@@ -59,17 +54,13 @@ public class SellItemCommand extends Command {
             return;
         }
 
-        items.remove(itemToSell.getId());
         int userMoney = d.getInteger("gold");
         int itemSellPrice = itemToSell.getSellCost();
 
         userMoney+=itemSellPrice;
 
-        Bson updateOp = set("gold", userMoney);
-        usersCollection.findOneAndUpdate(filter, updateOp);
-
-        updateOp = set("items", items);
-        usersCollection.findOneAndUpdate(filter, updateOp);
+        ga.updateValue("player.gold", userMoney);
+        ga.updateValue("player.items", items);
 
         event.getChannel().sendMessage("You successfully sold your " + itemToSell.getName() + " for "+itemSellPrice+" gold").queue();
     }
