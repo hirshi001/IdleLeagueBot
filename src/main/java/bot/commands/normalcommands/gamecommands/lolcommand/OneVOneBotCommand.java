@@ -89,7 +89,7 @@ public class OneVOneBotCommand extends Command {
                 append("bot", createNewChampDoc(false, botChamp));
 
         usersingame.replaceOne(eq(id),newDoc);
-        event.getChannel().sendMessage("Your game has started! Welcome to the rift").queue();
+        event.getChannel().sendMessage("Your game has started! Welcome to the howling abyss").queue();
         startingGame.remove(id);
 
     }

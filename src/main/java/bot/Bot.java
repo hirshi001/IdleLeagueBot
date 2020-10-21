@@ -15,6 +15,7 @@ import bot.commands.normalcommands.InviteLink;
 import bot.commands.normalcommands.gamecommands.items.BuyItemCommand;
 import bot.commands.normalcommands.gamecommands.items.SellItemCommand;
 import bot.commands.normalcommands.gamecommands.items.ShowItemsCommand;
+import bot.commands.normalcommands.gamecommands.location.GetLocationCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolDisableCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolEnableCommand;
 import bot.commands.normalcommands.gamecommands.jungling.BaronCommand;
@@ -62,7 +63,7 @@ public class Bot extends ListenerAdapter{
         System.out.println("Bot connected");
 
 
-        LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
+        //LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
 
         name = jda.getSelfUser().getName().toLowerCase();
         manager = new NormalCommandManager(jda);
@@ -78,14 +79,17 @@ public class Bot extends ListenerAdapter{
         manager.addCommand(new HelpCommand(),"help", "h");
         manager.addCommand(new BaronCommand(jda), "baron");
 
+        manager.addCommand(new BuyItemCommand(),"buy");
+        manager.addCommand(new ShowItemsCommand(), "items");
+        manager.addCommand(new SellItemCommand(), "sell");
+
+        manager.addCommand(new GetLocationCommand(), "location", "gamelocation", "gl");
+
 
 
         manager.addCommand(new LolEnableCommand(), "enablelol");
         manager.addCommand(new LolDisableCommand(),"disablelol");
 
-        manager.addCommand(new BuyItemCommand(),"buy");
-        manager.addCommand(new ShowItemsCommand(), "items");
-        manager.addCommand(new SellItemCommand(), "sell");
 
         manager.addCommand(new InviteLink(), "invitelink");
         manager.addCommand(new LinkBotStatusCommand(), "link");
