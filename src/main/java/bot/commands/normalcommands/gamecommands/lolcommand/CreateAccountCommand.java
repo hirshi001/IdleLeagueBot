@@ -2,6 +2,7 @@ package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -33,7 +34,6 @@ public class CreateAccountCommand extends Command {
         MongoCollection<Document> collection = MongoConnection.getUsersCollection();
 
         Bson filter = eq(id);
-
         if (collection.find(filter).first() != null) {
             event.getChannel().sendMessage("You already have an account").queue();
             return;
@@ -46,13 +46,8 @@ public class CreateAccountCommand extends Command {
                 append("be", 0);
         collection.insertOne(userDoc);
 
-        MongoCollection<Document> inGameCollection = MongoConnection.getOneVOneBotCollection();
-        Document inGameDoc = OneVOneBotCommand.defaultGameDoc(id);
-        inGameCollection.insertOne(inGameDoc);
-
-        MongoCollection<Document> cooldownCollection = MongoConnection.getCooldownsCollection();
-        Document cooldownDoc = new Document("_id", id);
-        cooldownCollection.insertOne(cooldownDoc);
+        GameAccount ga = new GameAccount(id);
+        ga.create();
 
         event.getChannel().sendMessage("<@"+id+">, you have succesfully created an account!").queue();
 

@@ -59,7 +59,7 @@ public class ResetCommand extends Command {
                 Bson filter = eq(id);
 
                 MongoConnection.getUsersCollection().findOneAndDelete(filter);
-                MongoConnection.getCooldownsCollection().findOneAndDelete(filter);
+                //MongoConnection.getCooldownsCollection().findOneAndDelete(filter);
                 MongoConnection.getOneVOneBotCollection().findOneAndDelete(filter);
 
                 event.getChannel().sendMessage("<@"+event.getAuthor().getId() + ">, your account has been deleted").queue();

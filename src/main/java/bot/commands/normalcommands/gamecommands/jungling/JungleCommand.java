@@ -74,17 +74,18 @@ public class JungleCommand extends Command {
             return;
         }
 
-        MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("jungle",System.currentTimeMillis()+initCooldownTime));
+        //MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("jungle",System.currentTimeMillis()+initCooldownTime));
 
 
         JungleMob mob = JungleMob.getRandomMob();
 
-        Document userDoc = GameAccount.getOneVOne(id);
-        Document d = userDoc.get("player", Document.class);
+        GameAccount gameAccount = new GameAccount(id);
+        gameAccount.regenerateDoc();
+        Document playerDocument = (Document)gameAccount.getDoc().get("player");
 
-        int gold = d.getInteger("gold");
-        int level = d.getInteger("level");
-        int experience = d.getInteger("experience");
+        int gold = playerDocument.getInteger("gold");
+        int level = playerDocument.getInteger("level");
+        int experience = playerDocument.getInteger("experience");
 
         int mobLevel = level+(int)(Math.random()*3);
         int goldEarned=mob.getGoldKill(mobLevel);
@@ -100,9 +101,9 @@ public class JungleCommand extends Command {
         }
 
 
-        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.gold",gold));
-        if(newLevel!=level) MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.level",newLevel));
-        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,inc("player.experience",experience));
+        gameAccount.updateValue("player.gold", gold);
+        if(newLevel!=level) gameAccount.updateValue("player.level", newLevel);
+        gameAccount.updateValue("player.experience",experience);
 
         jungling.remove(id);
 
@@ -138,6 +139,7 @@ public class JungleCommand extends Command {
     }
 
     private boolean cooldownCheck(long id, GuildMessageReceivedEvent event){
+        /*
         Document cooldownDoc = GameAccount.getCooldown(id);
         long finishTime = cooldownDoc.getLong("jungle");
         long currentTime = System.currentTimeMillis();
@@ -146,6 +148,8 @@ public class JungleCommand extends Command {
             event.getChannel().sendMessage("Please wait "+secs+" seconds before jungling again").queue();
             return true;
         }
+        return false;
+         */
         return false;
     }
 

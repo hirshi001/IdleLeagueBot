@@ -102,9 +102,7 @@ public class OneVOneBotCommand extends Command {
 
     public static Document defaultGameDoc(long id){
         return new Document("_id", id).
-                append("ingame", false).
-                append("player", createNewChampDoc(-1, ChampionRegistry.DEFAULT_CHAMPION)).
-                append("bot", createNewChampDoc(-1, ChampionRegistry.DEFAULT_CHAMPION));
+                append("ingame", false);
     }
 
 

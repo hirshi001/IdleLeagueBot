@@ -16,7 +16,6 @@ public class MongoConnection {
     private static MongoDatabase DATABASE;
     private static MongoCollection<Document> ONE_V_ONE_BOT_DATA_COLLECTION;
     private static MongoCollection<Document> USER_COLLECTION;
-    private static MongoCollection<Document> COOLDOWNS_COLLECTION;
     private static MongoCollection<Document> BANNED;
     private static MongoCollection<Document> ADMINS;
     private static MongoCollection<Document> CHANNEL_COMMANDS;
@@ -29,7 +28,6 @@ public class MongoConnection {
 
         ONE_V_ONE_BOT_DATA_COLLECTION = DATABASE.getCollection("onevonebotdata");
         USER_COLLECTION = DATABASE.getCollection("users");
-        COOLDOWNS_COLLECTION = DATABASE.getCollection("cooldowns");
         BANNED = DATABASE.getCollection("banned");
         ADMINS = DATABASE.getCollection("admins");
         CHANNEL_COMMANDS = DATABASE.getCollection("channelcommands");
@@ -47,10 +45,6 @@ public class MongoConnection {
 
     public static MongoCollection<Document> getUsersCollection(){
         return USER_COLLECTION;
-    }
-
-    public static MongoCollection<Document> getCooldownsCollection(){
-        return COOLDOWNS_COLLECTION;
     }
 
     public static MongoCollection<Document> getBannedCollection(){

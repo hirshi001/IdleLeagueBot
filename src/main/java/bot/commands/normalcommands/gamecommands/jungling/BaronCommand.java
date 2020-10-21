@@ -103,17 +103,16 @@ public class BaronCommand extends Command {
             return;
         }
 
-        MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("baron",System.currentTimeMillis()+initBaronCooldown));
+        //MongoConnection.getCooldownsCollection().findOneAndUpdate(filter, set("baron",System.currentTimeMillis()+initBaronCooldown));
 
 
-        //JungleMob mob = JungleMob.getRandomMob();
+        GameAccount gameAccount = new GameAccount(id);
+        gameAccount.regenerateDoc();
+        Document playerDocument = (Document)gameAccount.getDoc().get("player");
 
-        Document userDoc = GameAccount.getOneVOne(id);
-        Document d = userDoc.get("player",Document.class);
-
-        int gold = d.getInteger("gold");
-        int level = d.getInteger("level");
-        int experience = d.getInteger("experience");
+        int gold = playerDocument.getInteger("gold");
+        int level = playerDocument.getInteger("level");
+        int experience = playerDocument.getInteger("experience");
 
         int goldEarned = 600;
         int experienceEarned = 700;
@@ -127,10 +126,9 @@ public class BaronCommand extends Command {
             newLevel++;
         }
 
-
-        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.gold",gold));
-        if(newLevel!=level) MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,set("player.level",newLevel));
-        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(filter,inc("player.experience",experience));
+        gameAccount.updateValue("player.gold", gold);
+        if(newLevel!=level) gameAccount.updateValue("player.level", newLevel);
+        gameAccount.updateValue("player.experience",experience);
 
         baroning.remove(id);
 
@@ -165,7 +163,10 @@ public class BaronCommand extends Command {
         return false;
     }
 
+
     private boolean cooldownCheck(long id, GuildMessageReceivedEvent event){
+        return false;
+        /*
         Document cooldownDoc = GameAccount.getCooldown(id);
         long finishTime = cooldownDoc.getLong("baron");
         long currentTime = System.currentTimeMillis();
@@ -175,7 +176,10 @@ public class BaronCommand extends Command {
             return true;
         }
         return false;
+         */
     }
+
+
 
     @Override
     public boolean requiresLiving() {
