@@ -43,33 +43,43 @@ public class InGameProfileCommand extends Command {
         Long id = event.getAuthor().getIdLong();
         Document d = collection.find(eq(id)).first();
 
-        Document playerDoc = d.get("player", Document.class);
-        Champion c = ChampionRegistry.getChampion(playerDoc.getLong("champion"));
+        Document playerDoc = (Document)d.get("player");
+
+        EmbedBuilder ebp = createEmbed(playerDoc);
+        ebp.setTitle(event.getAuthor().getName());
+        ebp.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
+
+        EmbedBuilder ebb = createEmbed((Document)d.get("bot"));
+        ebb.setTitle("Bot");
+        ebb.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl());
+
+        event.getChannel().sendMessage(ebp.build()).queue();
+        event.getChannel().sendMessage(ebb.build()).queue();;
+
+
+    }
+
+    private EmbedBuilder createEmbed(Document doc){
+        Champion c = ChampionRegistry.getChampion(doc.getLong("champion"));
 
         EmbedBuilder profile = new EmbedBuilder();
-        profile.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
         if(c!=null) {
             String key = c.getKey();
             profile.setImage("http://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + key + "_0.jpg");
         }
         profile.setColor(Color.blue);
-        profile.setTitle(playerDoc.getString("name"));
+        profile.setTitle(doc.getString("name"));
         if(c!=null) {
             String champName = c.getName();
             profile.addField("Champion", champName, true);
         } else{
             profile.addField("Champion", "None", true);
         }
-        profile.addField("Level", playerDoc.getInteger("level").toString(), true);
+        profile.addField("Level", doc.getInteger("level").toString(), true);
         profile.addBlankField(false);
-        profile.addField("Experience", playerDoc.getInteger("experience").toString(),true);
-        profile.addField("Gold", playerDoc.getInteger("gold").toString(),true);
+        profile.addField("Experience", doc.getInteger("experience").toString(),true);
+        profile.addField("Gold", doc.getInteger("gold").toString(),true);
 
-        event.getChannel().sendMessage(profile.build()).queue();
-
-
-
-
-
+        return profile;
     }
 }
