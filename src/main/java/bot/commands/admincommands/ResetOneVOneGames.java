@@ -21,6 +21,6 @@ public class ResetOneVOneGames extends Command {
 
     @Override
     public void commandCalled(String name, String msg, GuildMessageReceivedEvent event, CommandManager commandManager) {
-        MongoConnection.getOneVOneBotCollection().aggregate(Arrays.asList(set("ingame",false), unset("player"), unset("bot")));
+       MongoConnection.getOneVOneBotCollection().updateMany(new Document(), set("ingame",false));
     }
 }

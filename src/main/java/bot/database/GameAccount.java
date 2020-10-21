@@ -58,7 +58,7 @@ public class GameAccount {
     }
 
     public void setNotInGame(){
-        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(eq(id), Updates.combine(set("ingame",false), unset("player"), unset("bot")));
+        MongoConnection.getOneVOneBotCollection().findOneAndUpdate(eq(id), set("ingame",false));
     }
 
 }

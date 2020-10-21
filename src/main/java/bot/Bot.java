@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
+import bot.commands.admincommands.ResetOneVOneGames;
 import bot.commands.normalcommands.DiscordCommand;
 import bot.commands.normalcommands.LinkBotStatusCommand;
 import bot.commands.admincommands.SayCommand;
@@ -107,6 +108,7 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand(new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
+        adminCommands.addCommand(new ResetOneVOneGames(), "resetgames");
         jda.addEventListener(adminCommands);
 
         jda.addEventListener(this);

@@ -100,12 +100,12 @@ public class OneVOneBotCommand extends Command {
     }
 
 
-    public static Document createNewChampDoc(boolean blueSize, Champion champion){
+    public static Document createNewChampDoc(boolean blueSide, Champion champion){
         return new Document().
                 append("champion", champion.getId()).
                 append("isdead", false).
                 append("revivetime", 0).
-                append("location", blueSize ? Location.BLUE_FOUNTAIN.getId() : Location.RED_FOUNTAIN.getId()).
+                append("location", blueSide ? Location.BLUE_FOUNTAIN.getId() : Location.RED_FOUNTAIN.getId()).
                 append("gold", 500).
                 append("level", 1).
                 append("experience", 0).
