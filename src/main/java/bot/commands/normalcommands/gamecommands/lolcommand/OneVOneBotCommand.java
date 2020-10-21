@@ -5,6 +5,7 @@ import bot.commands.commandutil.CommandActionWaiter;
 import bot.commands.commandutil.CommandManager;
 import bot.database.MongoConnection;
 import bot.gameutil.LaneConstants;
+import bot.gameutil.Location;
 import bot.gameutil.champions.champion.Champion;
 import bot.gameutil.champions.champion.ChampionRegistry;
 import com.mongodb.client.MongoCollection;
@@ -61,7 +62,7 @@ public class OneVOneBotCommand extends Command {
             return;
         }
         startingGame.add(id, event.getChannel().getIdLong());
-        event.getChannel().sendMessage("Choose a lane and champion. Example: ```mid leesin```\nThe enemy bot will be the same lane as you").queue();
+        event.getChannel().sendMessage("Choose a champion. Example: ```lee sin```").queue();
 
     }
 
@@ -70,14 +71,7 @@ public class OneVOneBotCommand extends Command {
         Long id = event.getAuthor().getIdLong();
         if(!startingGame.contains(id, event.getChannel().getIdLong())) return;
 
-        String[] args = event.getMessage().getContentRaw().split(" ",2);
-        int lane =  LaneConstants.getLane(args[0]);
-        if(lane==-1){
-            event.getChannel().sendMessage("That is not a valid lane!").queue();
-            startingGame.remove(id);
-            return;
-        }
-        String champName = args[1];
+        String champName = event.getMessage().getContentStripped().trim();
         Champion champ = ChampionRegistry.getChampion(champName);
         if(champ==null){
             event.getChannel().sendMessage("That is not a valid champion!").queue();
@@ -87,12 +81,12 @@ public class OneVOneBotCommand extends Command {
 
         MongoCollection<Document> usersingame = MongoConnection.getOneVOneBotCollection();
 
-       Champion botChamp = ChampionRegistry.getRandomChampion(lane);
+       Champion botChamp = ChampionRegistry.getRandomChampion();
 
         Document newDoc = new Document("_id", id).
                 append("ingame", true).
-                append("player", createNewChampDoc(lane, champ)).
-                append("bot", createNewChampDoc(lane, botChamp));
+                append("player", createNewChampDoc(true, champ)).
+                append("bot", createNewChampDoc(false, botChamp));
 
         usersingame.replaceOne(eq(id),newDoc);
         event.getChannel().sendMessage("Your game has started! Welcome to the rift").queue();
@@ -106,16 +100,16 @@ public class OneVOneBotCommand extends Command {
     }
 
 
-    public static Document createNewChampDoc(int lane, Champion champion){
+    public static Document createNewChampDoc(boolean blueSize, Champion champion){
         return new Document().
                 append("champion", champion.getId()).
                 append("isdead", false).
                 append("revivetime", 0).
-                append("lane", lane).
+                append("location", blueSize ? Location.BLUE_FOUNTAIN.getId() : Location.RED_FOUNTAIN.getId()).
                 append("gold", 500).
                 append("level", 1).
                 append("experience", 0).
-                append("items", new ArrayList<Integer>());
+                append("items", new ArrayList<Integer>(0));
     }
 
 
