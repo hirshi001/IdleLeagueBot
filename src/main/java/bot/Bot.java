@@ -135,21 +135,6 @@ public class Bot extends ListenerAdapter{
         }
     }
 
-
-    @Override
-    public void onDisconnect(@Nonnull DisconnectEvent event) {
-        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
-            c.sendMessage("Bot is disconnected").queue();
-        }
-    }
-
-    @Override
-    public void onResume(@Nonnull ResumedEvent event) {
-        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
-            c.sendMessage("Bot is resumed").queue();
-        }
-    }
-
     @Override
     public void onReconnect(@Nonnull ReconnectedEvent event) {
         for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
