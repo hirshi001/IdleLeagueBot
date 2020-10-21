@@ -2,6 +2,8 @@ package bot;
 
 import bot.commands.admincommands.BanCommand;
 import bot.commands.admincommands.ResetOneVOneGames;
+import bot.commands.commandutil.Command;
+import bot.commands.commandutil.CommandEntry;
 import bot.commands.normalcommands.DiscordCommand;
 import bot.commands.normalcommands.LinkBotStatusCommand;
 import bot.commands.admincommands.SayCommand;
@@ -19,7 +21,7 @@ import bot.commands.normalcommands.gamecommands.location.GetLocationCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolDisableCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolEnableCommand;
 import bot.commands.normalcommands.gamecommands.jungling.BaronCommand;
-import bot.commands.normalcommands.HelpCommand;
+import bot.commands.normalcommands.help.HelpCommand;
 import bot.commands.normalcommands.ResetCommand;
 import bot.commands.commandutil.CommandManager;
 import bot.commands.normalcommands.gamecommands.lolcommand.DefaultCommand;
@@ -27,6 +29,8 @@ import bot.commands.normalcommands.gamecommands.jungling.JungleCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.InGameProfileCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.CreateAccountCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.OneVOneBotCommand;
+import bot.commands.normalcommands.help.HelpSection;
+import bot.commands.normalcommands.help.HelpSectionBuilder;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.champion.ChampionRegistry;
 import net.dv8tion.jda.api.AccountType;
@@ -34,9 +38,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
-import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -65,41 +67,50 @@ public class Bot extends ListenerAdapter{
 
         //LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
 
+
+
         name = jda.getSelfUser().getName().toLowerCase();
         manager = new NormalCommandManager(jda);
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
-        manager.addCommand(new CreateAccountCommand(),"createaccount");
 
-        manager.addCommand(new OneVOneBotCommand(jda),"onevonebot");
-        manager.addCommand(new InGameProfileCommand(manager), "gameprofile", "gamep", "gp");
+        HelpSectionBuilder gameCommands = new HelpSectionBuilder("game commands");
 
-        manager.addCommand(new ResetCommand(),"reset");
-        manager.addCommand(new JungleCommand(),"jungle", "jg");
-        manager.addCommand(new HelpCommand(),"help", "h");
-        manager.addCommand(new BaronCommand(jda), "baron");
+        addCommand(manager, new CreateAccountCommand(), gameCommands, "createaccount");
 
-        manager.addCommand(new BuyItemCommand(),"buy");
-        manager.addCommand(new ShowItemsCommand(), "items");
-        manager.addCommand(new SellItemCommand(), "sell");
+        addCommand(manager, new OneVOneBotCommand(jda), gameCommands,"onevonebot");
+        addCommand(manager, new InGameProfileCommand(manager), gameCommands, "gameprofile", "gamep", "gp");
 
-        manager.addCommand(new GetLocationCommand(), "location", "gamelocation", "gl");
+        addCommand(manager, new ResetCommand(), gameCommands,"reset");
+        addCommand(manager, new JungleCommand(), gameCommands,"jungle", "jg");
+        addCommand(manager, new HelpCommand(), gameCommands,"help", "h");
+        addCommand(manager, new BaronCommand(jda), gameCommands, "baron");
 
+        addCommand(manager, new BuyItemCommand(), gameCommands,"buy");
+        addCommand(manager, new ShowItemsCommand(), gameCommands, "items");
+        addCommand(manager, new SellItemCommand(), gameCommands, "sell");
 
-
-        manager.addCommand(new LolEnableCommand(), "enablelol");
-        manager.addCommand(new LolDisableCommand(),"disablelol");
+        addCommand(manager, new GetLocationCommand(), gameCommands, "location", "gamelocation", "gl");
 
 
-        manager.addCommand(new InviteLink(), "invitelink");
-        manager.addCommand(new LinkBotStatusCommand(), "link");
-        manager.addCommand(new UnlinkBotStatusCommand(), "unlink");
+        HelpSectionBuilder moderatorCommands = new HelpSectionBuilder("moderator commands");
 
-        manager.addCommand(new DiscordCommand(), "discord");
+        addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");
+        addCommand(manager, new LolDisableCommand(), moderatorCommands,"disablelol");
+
+        addCommand(manager, new LinkBotStatusCommand(), moderatorCommands, "link");
+        addCommand(manager, new UnlinkBotStatusCommand(), moderatorCommands, "unlink");
 
 
+        HelpSectionBuilder otherCommands = new HelpSectionBuilder("other commands");
 
-        //manager.addCommand("help");
+        addCommand(manager, new InviteLink(), otherCommands,"invitelink");
+        addCommand(manager, new DiscordCommand(), otherCommands,"discord");
+
+        HelpCommand hc = new HelpCommand(gameCommands.build(), moderatorCommands.build(), otherCommands.build());
+        addCommand(manager, hc, otherCommands, "help");
+
+
         jda.addEventListener(manager);
 
 
@@ -109,7 +120,7 @@ public class Bot extends ListenerAdapter{
         adminCommands.addCommand(new BanCommand(),"ban");
         adminCommands.addCommand(new UnbanCommand(),"unban");
         adminCommands.addCommand(new SayCommand(),"say");
-        adminCommands.addCommand(new HelpCommand(),"help");
+        //adminCommands.addCommand(new HelpCommand(),"help");
         adminCommands.addCommand(new StopBotCommand(), "stopbot");
         adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
         adminCommands.addCommand(new ResetOneVOneGames(), "resetgames");
@@ -117,6 +128,11 @@ public class Bot extends ListenerAdapter{
 
         jda.addEventListener(this);
         printNumberOfGuilds();
+    }
+
+    private void addCommand(CommandManager manager, Command command, HelpSectionBuilder helpSectionBuilder, String... names){
+        CommandEntry ce = manager.addCommand(command, names);
+        helpSectionBuilder.add(ce);
     }
 
     @Override

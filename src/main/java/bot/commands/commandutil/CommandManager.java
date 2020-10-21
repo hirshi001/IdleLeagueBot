@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
 import static com.mongodb.client.model.Updates.set;
 
 public class CommandManager extends ListenerAdapter {
 
     CommandEntryComparator ceComparator = new CommandEntryComparator();
-    List<CommandEntry> commands = new ArrayList<>();
     Map<String, CommandEntry> aliases = new HashMap<>();
     CommandEntry defaultCommand;
 
@@ -104,12 +104,11 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    public void addCommand(Command command, String... names ){
+    public CommandEntry addCommand(Command command, String... names ){
         CommandEntry ce = new CommandEntry(names, command);
-        commands.add(ce);
-        commands.sort(ceComparator);
         for(String name:names) aliases.put(name,ce);
         jda.addEventListener(command);
+        return ce;
     }
 
     public void setDefaultCommand(Command command){
@@ -122,10 +121,6 @@ public class CommandManager extends ListenerAdapter {
 
     public Map<String, CommandEntry> getCommandsMap(){
         return aliases;
-    }
-
-    public List<CommandEntry> getCommands(){
-        return commands;
     }
 
     public void setPrefix(String prefix){
