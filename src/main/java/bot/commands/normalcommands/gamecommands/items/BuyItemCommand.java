@@ -3,6 +3,7 @@ package bot.commands.normalcommands.gamecommands.items;
 import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.database.GameAccount;
 import bot.database.MongoConnection;
 import bot.gameutil.items.Item;
 import bot.gameutil.items.ItemRegistry;
@@ -40,11 +41,9 @@ public class BuyItemCommand extends Command {
             event.getChannel().sendMessage("This item doesn't exist").queue();
             return;
         }
-        MongoCollection<Document> oneVoneCollection = MongoConnection.getOneVOneBotCollection();
-        Long id = event.getAuthor().getIdLong();
-        Bson filter = eq(id);
 
-        Document d = oneVoneCollection.find(filter).first().get("player", Document.class);
+        GameAccount ga = new GameAccount(event.getAuthor().getIdLong());
+        Document d = (Document)ga.getDoc().get("player");
 
         List<Integer> items = d.getList("items", Integer.class);
 
@@ -64,11 +63,8 @@ public class BuyItemCommand extends Command {
         items.add(itemToBuy.getId());
         userMoney-=itemCost;
 
-        Bson updateOp = set("player.gold", userMoney);
-        oneVoneCollection.findOneAndUpdate(filter, updateOp);
-
-        updateOp = set("player.items", items);
-        oneVoneCollection.findOneAndUpdate(filter, updateOp);
+        ga.updateValue("player.gold", userMoney);
+        ga.updateValue("player.items", items);
 
         event.getChannel().sendMessage("You successfully bought a " +itemToBuy.getName()).queue();
 
