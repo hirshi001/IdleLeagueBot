@@ -10,8 +10,6 @@ import java.util.List;
 
 public class StopBotCommand extends Command {
 
-    volatile boolean stoppingBot = false;
-    int exitCount;
 
     @Override
     public String getHelp() {
