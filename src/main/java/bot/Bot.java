@@ -29,16 +29,14 @@ import bot.commands.normalcommands.gamecommands.jungling.JungleCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.InGameProfileCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.CreateAccountCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.OneVOneBotCommand;
-import bot.commands.normalcommands.help.HelpSection;
-import bot.commands.normalcommands.help.HelpSectionBuilder;
+import bot.commands.normalcommands.help.helpsection.GameCommandsHelpSection;
+import bot.commands.normalcommands.help.helpsection.HelpSection;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.champion.ChampionRegistry;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -65,7 +63,7 @@ public class Bot extends ListenerAdapter{
         System.out.println("Bot connected");
 
 
-        LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
+        //LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
 
 
 
@@ -74,7 +72,7 @@ public class Bot extends ListenerAdapter{
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
 
-        HelpSectionBuilder gameCommands = new HelpSectionBuilder("game commands");
+        HelpSection gameCommands = new GameCommandsHelpSection("game commands");
 
         addCommand(manager, new CreateAccountCommand(), gameCommands, "createaccount");
 
@@ -93,7 +91,7 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new GetLocationCommand(), gameCommands, "location", "gamelocation", "gl");
 
 
-        HelpSectionBuilder moderatorCommands = new HelpSectionBuilder("moderator commands");
+        HelpSection moderatorCommands = new HelpSection("moderator commands");
 
         addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");
         addCommand(manager, new LolDisableCommand(), moderatorCommands,"disablelol");
@@ -102,12 +100,12 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new UnlinkBotStatusCommand(), moderatorCommands, "unlink");
 
 
-        HelpSectionBuilder otherCommands = new HelpSectionBuilder("other commands");
+        HelpSection otherCommands = new HelpSection("other commands");
 
         addCommand(manager, new InviteLink(), otherCommands,"invitelink");
         addCommand(manager, new DiscordCommand(), otherCommands,"discord");
 
-        HelpCommand hc = new HelpCommand(gameCommands.build(), moderatorCommands.build(), otherCommands.build());
+        HelpCommand hc = new HelpCommand(gameCommands, moderatorCommands, otherCommands);
         addCommand(manager, hc, otherCommands, "help");
 
 
@@ -130,9 +128,9 @@ public class Bot extends ListenerAdapter{
         printNumberOfGuilds();
     }
 
-    private void addCommand(CommandManager manager, Command command, HelpSectionBuilder helpSectionBuilder, String... names){
+    private void addCommand(CommandManager manager, Command command, HelpSection helpSection, String... names){
         CommandEntry ce = manager.addCommand(command, names);
-        helpSectionBuilder.add(ce);
+        helpSection.addCommandEntry(ce);
     }
 
     @Override

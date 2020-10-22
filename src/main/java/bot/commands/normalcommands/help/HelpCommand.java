@@ -2,8 +2,8 @@ package bot.commands.normalcommands.help;
 
 import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
-import bot.commands.commandutil.CommandEntry;
 import bot.commands.commandutil.CommandManager;
+import bot.commands.normalcommands.help.helpsection.HelpSection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -21,6 +21,7 @@ public class HelpCommand extends Command {
         map = new HashMap<>();
         for(HelpSection hs: helpSections){
             map.put(hs.getName().toLowerCase(), hs);
+            hs.buildHelpPage();
         }
         createHelpPage(helpSections);
 

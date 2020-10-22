@@ -1,4 +1,4 @@
-package bot.commands.normalcommands.help;
+package bot.commands.normalcommands.help.helpsection;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandEntry;
@@ -6,32 +6,36 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.Color;
+import java.util.LinkedList;
+import java.util.List;
 
 public class HelpSection {
 
     private String name;
-    private CommandEntry[] commands;
+    private List<CommandEntry> commandsList = new LinkedList<>();
 
     private MessageEmbed helpPage;
 
-    public HelpSection(String name, CommandEntry... commands){
+    public HelpSection(String name){
         this.name = name;
-        this.commands = commands;
-        buildHelpPage();
     }
 
-    private void buildHelpPage(){
+    public void addCommandEntry(CommandEntry ce){
+        commandsList.add(ce);
+    }
+
+    public void buildHelpPage(){
         EmbedBuilder eb = new EmbedBuilder();
         createEmbedBuilder(eb);
         helpPage = eb.build();
     }
 
-    private void createEmbedBuilder(EmbedBuilder eb){
+    protected void createEmbedBuilder(EmbedBuilder eb){
         eb.setColor(Color.ORANGE);
         eb.setTitle(name);
         eb.setDescription("Type lol help [command name] for more help about that command");
         StringBuilder sb = new StringBuilder();
-        for(CommandEntry c: commands){
+        for(CommandEntry c: commandsList){
             sb.append("``").append(c.defaultName).append("`` ");
         }
         eb.addField(sb.toString(),"",false);
