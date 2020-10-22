@@ -65,7 +65,7 @@ public class Bot extends ListenerAdapter{
         System.out.println("Bot connected");
 
 
-        //LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
+        LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
 
 
 
@@ -154,13 +154,6 @@ public class Bot extends ListenerAdapter{
         //System.out.println(event.getMessage().getEmbeds().get(0).getFields().get(0).getName());
         if(event.getMessage().getContentRaw().equalsIgnoreCase(name)){
             event.getChannel().sendMessage(":person_facepalming:the prefix for this bot is "+ manager.getPrefix()).queue();
-        }
-    }
-
-    @Override
-    public void onReconnect(@Nonnull ReconnectedEvent event) {
-        for(TextChannel c:LinkBotStatusCommand.getLinkedChannels(event.getJDA())){
-            c.sendMessage("Bot is reconnected").queue();
         }
     }
 
