@@ -12,6 +12,6 @@ public class GameCommandsHelpSection extends HelpSection {
     @Override
     protected void createEmbedBuilder(EmbedBuilder eb) {
         super.createEmbedBuilder(eb);
-        eb.addField("for new users, to help with getting started, type", "lol tutorial", false);
+        eb.addField("for new users, to get help with getting started, type", "`lol tutorial`", false);
     }
 }

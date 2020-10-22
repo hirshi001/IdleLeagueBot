@@ -21,6 +21,7 @@ import bot.commands.normalcommands.gamecommands.location.GetLocationCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolDisableCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.LolEnableCommand;
 import bot.commands.normalcommands.gamecommands.jungling.BaronCommand;
+import bot.commands.normalcommands.gamecommands.lolcommand.TutorialCommand;
 import bot.commands.normalcommands.help.HelpCommand;
 import bot.commands.normalcommands.ResetCommand;
 import bot.commands.commandutil.CommandManager;
@@ -89,6 +90,8 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new SellItemCommand(), gameCommands, "sell");
 
         addCommand(manager, new GetLocationCommand(), gameCommands, "location", "gamelocation", "gl");
+
+        addCommand(manager, new TutorialCommand(), gameCommands, "tutorial");
 
         HelpSection moderatorCommands = new HelpSection("moderator commands");
 
