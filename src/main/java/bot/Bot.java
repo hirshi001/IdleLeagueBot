@@ -90,7 +90,6 @@ public class Bot extends ListenerAdapter{
 
         addCommand(manager, new GetLocationCommand(), gameCommands, "location", "gamelocation", "gl");
 
-
         HelpSection moderatorCommands = new HelpSection("moderator commands");
 
         addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");

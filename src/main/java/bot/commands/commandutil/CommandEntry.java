@@ -11,14 +11,14 @@ import java.util.Set;
 
 public class CommandEntry{
 
-    public Command command;
+    public ICommand command;
     public String defaultName;
     public String[] names;
 
     public MessageEmbed helpEmbed;
 
 
-    public CommandEntry(String[] names, Command command, String prefix){
+    public CommandEntry(String[] names, ICommand command, String prefix){
         this.defaultName = names[0];
         this.names = names;
         this.command = command;

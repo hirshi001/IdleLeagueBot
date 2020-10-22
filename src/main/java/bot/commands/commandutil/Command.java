@@ -7,12 +7,13 @@ public abstract class Command extends ListenerAdapter implements ICommand {
 
     private Arguments args = Arguments.DEFAULT_ARGUMENTS;
 
-    public abstract String getHelp();
 
+    @Override
     public Arguments getArguments(){
         return args;
     }
 
+    @Override
     public void setArguments(Arguments args){
         this.args = args;
     }
@@ -23,23 +24,29 @@ public abstract class Command extends ListenerAdapter implements ICommand {
 
     }
 
+    @Override
     public boolean requiresAccount(){
         return requiredInGame();
     }
 
+    @Override
     public String accountRequireTitle(){
         return "You cannot perform this action without an account!";
     }
 
+    @Override
     public boolean requiredInGame(){
         return requiresLiving();
     }
 
+    @Override
     public String inGameRequireTitle(){
         return "You cannot perform this action without being in a game";
     }
 
+    @Override
     public boolean requiresLiving(){ return false; }
 
+    @Override
     public String requiresLivingTitle() { return "You cannot perform this action if you dead."; }
 }

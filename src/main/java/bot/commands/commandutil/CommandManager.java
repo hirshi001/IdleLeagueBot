@@ -104,14 +104,14 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    public CommandEntry addCommand(Command command, String... names){
+    public CommandEntry addCommand(ICommand command, String... names){
         CommandEntry ce = new CommandEntry(names, command, getPrefix());
         for(String name:names) aliases.put(name,ce);
         jda.addEventListener(command);
         return ce;
     }
 
-    public void setDefaultCommand(Command command){
+    public void setDefaultCommand(ICommand command){
         defaultCommand = new CommandEntry(new String[]{""}, command, getPrefix());
     }
 
