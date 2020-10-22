@@ -22,6 +22,11 @@ public class HelpSection {
 
     private void buildHelpPage(){
         EmbedBuilder eb = new EmbedBuilder();
+        createEmbedBuilder(eb);
+        helpPage = eb.build();
+    }
+
+    private void createEmbedBuilder(EmbedBuilder eb){
         eb.setColor(Color.ORANGE);
         eb.setTitle(name);
         eb.setDescription("Type lol help [command name] for more help about that command");
@@ -30,7 +35,7 @@ public class HelpSection {
             sb.append("``").append(c.defaultName).append("`` ");
         }
         eb.addField(sb.toString(),"",false);
-        helpPage = eb.build();
+
     }
 
     public String getName(){
