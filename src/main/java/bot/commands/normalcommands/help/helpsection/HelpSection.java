@@ -15,9 +15,12 @@ public class HelpSection {
     private List<CommandEntry> commandsList = new LinkedList<>();
 
     private MessageEmbed helpPage;
+    private EmbedBuilder eb;
 
     public HelpSection(String name){
         this.name = name;
+        eb = new EmbedBuilder();
+        createEmbedBuilder(eb);
     }
 
     public void addCommandEntry(CommandEntry ce){
@@ -25,12 +28,14 @@ public class HelpSection {
     }
 
     public void buildHelpPage(){
-        EmbedBuilder eb = new EmbedBuilder();
-        createEmbedBuilder(eb);
         helpPage = eb.build();
     }
 
-    protected void createEmbedBuilder(EmbedBuilder eb){
+    public EmbedBuilder getEmbedBuilder(){
+        return eb;
+    }
+
+    public void createEmbedBuilder(EmbedBuilder eb){
         eb.setColor(Color.ORANGE);
         eb.setTitle(name);
         eb.setDescription("Type lol help [command name] for more help about that command");
@@ -39,7 +44,6 @@ public class HelpSection {
             sb.append("``").append(c.defaultName).append("`` ");
         }
         eb.addField(sb.toString(),"",false);
-
     }
 
     public String getName(){

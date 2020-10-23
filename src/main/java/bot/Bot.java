@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
+import bot.commands.admincommands.GetRamCommand;
 import bot.commands.admincommands.ResetOneVOneGames;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandEntry;
@@ -30,7 +31,6 @@ import bot.commands.normalcommands.gamecommands.jungling.JungleCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.InGameProfileCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.CreateAccountCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.OneVOneBotCommand;
-import bot.commands.normalcommands.help.helpsection.GameCommandsHelpSection;
 import bot.commands.normalcommands.help.helpsection.HelpSection;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.champion.ChampionRegistry;
@@ -73,7 +73,7 @@ public class Bot extends ListenerAdapter{
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
 
-        HelpSection gameCommands = new GameCommandsHelpSection("game commands");
+        HelpSection gameCommands = new HelpSection("game commands");
 
         addCommand(manager, new CreateAccountCommand(), gameCommands, "createaccount");
 
@@ -101,6 +101,9 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new LinkBotStatusCommand(), moderatorCommands, "link");
         addCommand(manager, new UnlinkBotStatusCommand(), moderatorCommands, "unlink");
 
+        gameCommands.buildHelpPage();
+        gameCommands.getEmbedBuilder().addField("For new users, to get started, type","`lol tutorial`", false);
+
 
         HelpSection otherCommands = new HelpSection("other commands");
 
@@ -109,21 +112,32 @@ public class Bot extends ListenerAdapter{
 
         HelpCommand hc = new HelpCommand(gameCommands, moderatorCommands, otherCommands);
         addCommand(manager, hc, otherCommands, "help");
+        otherCommands.buildHelpPage();
 
 
         jda.addEventListener(manager);
 
 
         CommandManager adminCommands = new AdminCommandManager(jda);
+
         adminCommands.setPrefix("adminlol");
         adminCommands.setDefaultCommand(new DefaultCommand());
-        adminCommands.addCommand(new BanCommand(),"ban");
-        adminCommands.addCommand(new UnbanCommand(),"unban");
-        adminCommands.addCommand(new SayCommand(),"say");
-        //adminCommands.addCommand(new HelpCommand(),"help");
-        adminCommands.addCommand(new StopBotCommand(), "stopbot");
-        adminCommands.addCommand(new SendAnnouncementCommand(), "sendannouncement");
-        adminCommands.addCommand(new ResetOneVOneGames(), "resetgames");
+
+        HelpSection adminBan = new HelpSection("moderating players");
+        addCommand(adminCommands, new BanCommand(), adminBan, "ban");
+        addCommand(adminCommands, new UnbanCommand(),adminBan,"unban");
+
+        HelpSection adminSpeakSection = new HelpSection("bot speaking");
+        addCommand(adminCommands, new SayCommand(),adminSpeakSection,"say");
+        addCommand(adminCommands, new SendAnnouncementCommand(), adminSpeakSection,"sendannouncement");
+
+        HelpSection adminBotTechnicals = new HelpSection("bot technicals");
+        addCommand(adminCommands, new StopBotCommand(), adminBotTechnicals,"stopbot");
+        addCommand(adminCommands, new ResetOneVOneGames(), adminBotTechnicals,"resetgames");
+        addCommand(adminCommands, new GetRamCommand(), adminBotTechnicals, "getram");
+
+        HelpSection adminOtherSection = new HelpSection("other");
+        addCommand(adminCommands, new HelpCommand(),adminOtherSection,"help");
         jda.addEventListener(adminCommands);
 
         jda.addEventListener(this);
