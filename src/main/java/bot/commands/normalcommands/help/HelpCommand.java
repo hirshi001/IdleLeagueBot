@@ -17,13 +17,7 @@ public class HelpCommand extends Command {
     private Map<String, HelpSection> map;
     private MessageEmbed helpPage;
 
-    public HelpCommand(HelpSection... helpSections){
-        map = new HashMap<>();
-        for(HelpSection hs: helpSections){
-            map.put(hs.getName().toLowerCase(), hs);
-            hs.buildHelpPage();
-        }
-        createHelpPage(helpSections);
+    public HelpCommand(){
 
         Arguments args = new Arguments().addArgument("command/section name", true);
         args.update();
@@ -31,7 +25,14 @@ public class HelpCommand extends Command {
 
     }
 
-    private void createHelpPage(HelpSection[] arr){
+    public void createHelpPage(HelpSection... arr){
+
+        map = new HashMap<>();
+        for(HelpSection hs: arr){
+            map.put(hs.getName().toLowerCase(), hs);
+            hs.buildHelpPage();
+        }
+
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.MAGENTA);
         eb.setTitle("Help");

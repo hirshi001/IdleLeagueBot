@@ -20,7 +20,6 @@ public class HelpSection {
     public HelpSection(String name){
         this.name = name;
         eb = new EmbedBuilder();
-        createEmbedBuilder(eb);
     }
 
     public void addCommandEntry(CommandEntry ce){
@@ -35,7 +34,7 @@ public class HelpSection {
         return eb;
     }
 
-    public void createEmbedBuilder(EmbedBuilder eb){
+    public void setEmbedBuilder(){
         eb.setColor(Color.ORANGE);
         eb.setTitle(name);
         eb.setDescription("Type lol help [command name] for more help about that command");

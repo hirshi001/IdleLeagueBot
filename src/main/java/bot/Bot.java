@@ -93,6 +93,11 @@ public class Bot extends ListenerAdapter{
 
         addCommand(manager, new TutorialCommand(), gameCommands, "tutorial");
 
+        gameCommands.setEmbedBuilder();
+        gameCommands.getEmbedBuilder().addField("For new users, to get started, type","`lol tutorial`", false);
+        gameCommands.buildHelpPage();
+
+
         HelpSection moderatorCommands = new HelpSection("moderator commands");
 
         addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");
@@ -101,8 +106,8 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new LinkBotStatusCommand(), moderatorCommands, "link");
         addCommand(manager, new UnlinkBotStatusCommand(), moderatorCommands, "unlink");
 
-        gameCommands.buildHelpPage();
-        gameCommands.getEmbedBuilder().addField("For new users, to get started, type","`lol tutorial`", false);
+        moderatorCommands.setEmbedBuilder();
+        moderatorCommands.buildHelpPage();
 
 
         HelpSection otherCommands = new HelpSection("other commands");
@@ -110,9 +115,11 @@ public class Bot extends ListenerAdapter{
         addCommand(manager, new InviteLink(), otherCommands,"invitelink");
         addCommand(manager, new DiscordCommand(), otherCommands,"discord");
 
-        HelpCommand hc = new HelpCommand(gameCommands, moderatorCommands, otherCommands);
+        HelpCommand hc = new HelpCommand();
         addCommand(manager, hc, otherCommands, "help");
+        otherCommands.setEmbedBuilder();
         otherCommands.buildHelpPage();
+        hc.createHelpPage(gameCommands, moderatorCommands, otherCommands);
 
 
         jda.addEventListener(manager);
