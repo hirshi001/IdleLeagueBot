@@ -19,7 +19,7 @@ public class GetRamCommand extends Command {
 
         event.getChannel().sendMessage("Total Memory = " + totalMemory +
                 "MB\nFree Memory = " + freeMemory +
-                "MB\nRemaining Memory = " + (totalMemory-freeMemory) + "MB").queue();
+                "MB\nUsed Memory = " + (totalMemory-freeMemory) + "MB").queue();
 
 
     }
