@@ -2,11 +2,8 @@ package bot.commands.admincommands;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
-import bot.commands.normalcommands.LinkBotStatusCommand;
-import net.dv8tion.jda.api.entities.TextChannel;
+import bot.commands.normalcommands.link.LinkBotStatusCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-
-import java.util.List;
 
 public class StopBotCommand extends Command {
 

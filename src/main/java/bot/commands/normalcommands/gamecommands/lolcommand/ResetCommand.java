@@ -1,7 +1,8 @@
-package bot.commands.normalcommands;
+package bot.commands.normalcommands.gamecommands.lolcommand;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.commands.normalcommands.Roasts;
 import bot.database.MongoConnection;
 import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;

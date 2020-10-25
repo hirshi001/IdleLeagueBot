@@ -1,7 +1,8 @@
-package bot.commands.normalcommands;
+package bot.commands.normalcommands.link;
 
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.commands.normalcommands.link.LinkBotStatusCommand;
 import bot.database.MongoConnection;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
