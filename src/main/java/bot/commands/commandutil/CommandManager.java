@@ -49,7 +49,7 @@ public class CommandManager extends ListenerAdapter {
         else if(!messageSplit[0].equalsIgnoreCase(prefix)) return;
         else if(messageSplit.length==1){
             if(defaultCommand!=null){
-                defaultCommand.command.commandCalled("","", event, this);
+                //defaultCommand.command.commandCalled("","", event, this);
                 return;
             }
         }
