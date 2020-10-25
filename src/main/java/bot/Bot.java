@@ -31,6 +31,7 @@ import bot.commands.normalcommands.gamecommands.jungling.JungleCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.InGameProfileCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.CreateAccountCommand;
 import bot.commands.normalcommands.gamecommands.lolcommand.OneVOneBotCommand;
+import bot.commands.normalcommands.help.helpsection.DefaultHelpSection;
 import bot.commands.normalcommands.help.helpsection.HelpSection;
 import bot.database.MongoConnection;
 import bot.gameutil.champions.champion.ChampionRegistry;
@@ -73,7 +74,7 @@ public class Bot extends ListenerAdapter{
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
 
-        HelpSection gameCommands = new HelpSection("game commands");
+        HelpSection gameCommands = new DefaultHelpSection("game commands");
 
         addCommand(manager, new CreateAccountCommand(), gameCommands, "createaccount");
 
@@ -98,7 +99,7 @@ public class Bot extends ListenerAdapter{
         gameCommands.buildHelpPage();
 
 
-        HelpSection moderatorCommands = new HelpSection("moderator commands");
+        HelpSection moderatorCommands = new DefaultHelpSection("moderator commands");
 
         addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");
         addCommand(manager, new LolDisableCommand(), moderatorCommands,"disablelol");
@@ -110,7 +111,7 @@ public class Bot extends ListenerAdapter{
         moderatorCommands.buildHelpPage();
 
 
-        HelpSection otherCommands = new HelpSection("other commands");
+        HelpSection otherCommands = new DefaultHelpSection("other commands");
 
         addCommand(manager, new InviteLink(), otherCommands,"invitelink");
         addCommand(manager, new DiscordCommand(), otherCommands,"discord");
@@ -130,20 +131,20 @@ public class Bot extends ListenerAdapter{
         adminCommands.setPrefix("adminlol");
         adminCommands.setDefaultCommand(new DefaultCommand());
 
-        HelpSection adminBan = new HelpSection("moderating players");
+        HelpSection adminBan = new DefaultHelpSection("moderating players");
         addCommand(adminCommands, new BanCommand(), adminBan, "ban");
         addCommand(adminCommands, new UnbanCommand(),adminBan,"unban");
 
-        HelpSection adminSpeakSection = new HelpSection("bot speaking");
+        HelpSection adminSpeakSection = new DefaultHelpSection("bot speaking");
         addCommand(adminCommands, new SayCommand(),adminSpeakSection,"say");
         addCommand(adminCommands, new SendAnnouncementCommand(), adminSpeakSection,"sendannouncement");
 
-        HelpSection adminBotTechnicals = new HelpSection("bot technicals");
+        HelpSection adminBotTechnicals = new DefaultHelpSection("bot technicals");
         addCommand(adminCommands, new StopBotCommand(), adminBotTechnicals,"stopbot");
         addCommand(adminCommands, new ResetOneVOneGames(), adminBotTechnicals,"resetgames");
         addCommand(adminCommands, new GetRamCommand(), adminBotTechnicals, "getram");
 
-        HelpSection adminOtherSection = new HelpSection("other");
+        HelpSection adminOtherSection = new DefaultHelpSection("other");
         addCommand(adminCommands, new HelpCommand(),adminOtherSection,"help");
         jda.addEventListener(adminCommands);
 

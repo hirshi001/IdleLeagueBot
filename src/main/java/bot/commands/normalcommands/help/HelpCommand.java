@@ -3,6 +3,7 @@ package bot.commands.normalcommands.help;
 import bot.commands.commandutil.Arguments;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandManager;
+import bot.commands.normalcommands.help.helpsection.DefaultHelpSection;
 import bot.commands.normalcommands.help.helpsection.HelpSection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -12,7 +13,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HelpCommand extends Command {
+public class HelpCommand extends Command{
 
     private Map<String, HelpSection> map;
     private MessageEmbed helpPage;
