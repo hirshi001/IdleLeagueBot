@@ -23,7 +23,7 @@ public class MongoConnection {
 
 
     public static void setup(String name, String password, String dbname){
-        CLIENT = MongoClients.create(new ConnectionString("mongodb+srv://idleleague:"+password+"@"+name+".wsx3r.mongodb.net/"+dbname+"?retryWrites=true&w=majority"));
+//        CLIENT = MongoClients.create(new ConnectionString("mongodb+srv://idleleague:"+password+"@"+name+".wsx3r.mongodb.net/"+dbname+"?retryWrites=true&w=majority"));
         DATABASE = CLIENT.getDatabase("idleleague");
 
         ONE_V_ONE_BOT_DATA_COLLECTION = DATABASE.getCollection("onevonebotdata");
