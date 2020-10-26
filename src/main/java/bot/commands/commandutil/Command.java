@@ -3,6 +3,8 @@ package bot.commands.commandutil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import javax.annotation.Nonnull;
+
 public abstract class Command extends ListenerAdapter implements ICommand {
 
     private Arguments args = Arguments.DEFAULT_ARGUMENTS;
