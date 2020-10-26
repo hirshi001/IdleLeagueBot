@@ -1,0 +1,25 @@
+afterEvaluate {
+    /*
+    ext.env = project.extensions.findByName('env') ?: [
+            POSTGRES_USER    : System.getenv('SPRING_DATASOURCE_USERNAME'),
+            POSTGRES_PASSWORD: System.getenv('SPRING_DATASOURCE_PASSWORD'),
+            POSTGRES_DB_URL  : System.getenv('SPRING_DATASOURCE_URL'),
+    ]
+
+    jar {
+        // disabled by spring-boot
+        enabled = true
+    }
+
+     */
+
+    task stage(dependsOn: ['build', 'clean'], group: 'build') {
+        finalizedBy('installDist')
+    }
+
+    tasks.findByName("build")?.mustRunAfter('clean')
+
+    installDist {
+        destinationDir file("$rootProject.buildDir/run")
+    }
+}
