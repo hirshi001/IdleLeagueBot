@@ -1,1 +1,1 @@
-worker: gradle run
+worker: ./gradlew run
