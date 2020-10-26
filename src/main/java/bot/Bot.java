@@ -74,7 +74,7 @@ public class Bot extends ListenerAdapter{
         manager.setPrefix("lol");
         manager.setDefaultCommand(new DefaultCommand());
 
-        HelpSection gameCommands = new DefaultHelpSection("game commands");
+        HelpSection gameCommands = new DefaultHelpSection("me commands");
 
         addCommand(manager, new CreateAccountCommand(), gameCommands, "createaccount");
 

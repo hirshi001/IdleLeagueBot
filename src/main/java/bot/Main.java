@@ -5,6 +5,7 @@ import bot.database.MongoConnection;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.rmi.registry.LocateRegistry;
 import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -13,7 +14,6 @@ import static com.mongodb.client.model.Filters.eq;
 public class Main{
 
     public static void main(String[] args) throws Exception {
-
 
 
         String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
