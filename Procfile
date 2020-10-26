@@ -1,1 +1,1 @@
-worker: ./gradlew run --stacktrace
+worker: ./gradlew --stop; ./gradlew run --stacktrace
