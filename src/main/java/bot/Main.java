@@ -15,20 +15,23 @@ public class Main{
     public static void main(String[] args) throws Exception {
 
 
-        /*
+
         String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
         File f = new File(path);
-        System.out.println(path);
-        Scanner scanner = new Scanner(new FileInputStream(f));
-        String token = scanner.nextLine();
-         */
-
-        String dbName = System.getenv("DB_NAME");
-        String dbPassword = System.getenv("DB_PASSWORD");
+        String token, dbName, dbPassword;
+        if(f.exists()) {
+            Scanner scanner = new Scanner(new FileInputStream(f));
+            token = scanner.nextLine();
+            dbName = scanner.nextLine();
+            dbPassword = scanner.nextLine();
+        }
+        else {
+            dbName = System.getenv("DB_NAME");
+            dbPassword = System.getenv("DB_PASSWORD");
+            token = System.getenv("BOT_TOKEN");
+        }
         MongoConnection.setup(dbName, dbPassword, "idleleague");
-
-        String token = System.getenv("BOT_TOKEN");
-        System.out.println(token);
+        //System.out.println(token);
 
 
 
