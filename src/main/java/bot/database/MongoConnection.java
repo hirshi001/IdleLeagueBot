@@ -21,7 +21,6 @@ public class MongoConnection {
     private static MongoCollection<Document> CHANNEL_COMMANDS;
     private static MongoCollection<Document> CHANNEL_LINK;
 
-
     public static void setup(String name, String password, String dbname){
         CLIENT = MongoClients.create("mongodb+srv://idleleague:"+password+"@"+name+".wsx3r.mongodb.net/"+dbname+"?retryWrites=true&w=majority");
         DATABASE = CLIENT.getDatabase("idleleague");

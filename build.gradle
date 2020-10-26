@@ -20,9 +20,11 @@ dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
+/*
 task stage {
     dependsOn installDist
 }
+ */
 
 
 jar {
@@ -32,4 +34,15 @@ jar {
                 'Main-Class': 'bot.Main'
         )
     }
+}
+
+
+task stage(dependsOn: ['build', 'clean'], group: 'build') {
+    finalizedBy('installDist')
+}
+
+tasks.findByName("build")?.mustRunAfter('clean')
+
+installDist {
+    destinationDir file("$rootProject.buildDir/run")
 }
