@@ -1,1 +1,1 @@
-worker: java -jar build/libs/JavaDiscordBot-1.0-SNAPSHOT.jar
+worker: java build/libs/JavaDiscordBot-1.0-SNAPSHOT.jar
