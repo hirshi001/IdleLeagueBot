@@ -1,1 +1,1 @@
-worker: ./gradlew stage
+worker: ./gradlew run
