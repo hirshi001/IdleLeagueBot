@@ -12,6 +12,7 @@ afterEvaluate {
     }
 
      */
+    /*
 
     task stage(dependsOn: ['build', 'clean'], group: 'build') {
         finalizedBy('installDist')
@@ -22,4 +23,6 @@ afterEvaluate {
     installDist {
         destinationDir file("$rootProject.buildDir/run")
     }
+
+     */
 }
