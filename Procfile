@@ -1,1 +1,1 @@
-worker: ./gradlew --stop; ./gradlew run --stacktrace
+worker: ./gradlew clean --no-daemon ./gradlew run --stacktrace
