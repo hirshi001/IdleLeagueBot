@@ -34,7 +34,6 @@ public class MongoConnection {
             CHANNEL_LINK = DATABASE.getCollection("channellink");
         } catch (Throwable t){
             t.printStackTrace();
-            System.err.println("TESTawd");
         }
     }
 

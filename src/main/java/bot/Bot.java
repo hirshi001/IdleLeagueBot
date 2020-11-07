@@ -3,6 +3,7 @@ package bot;
 import bot.commands.admincommands.BanCommand;
 import bot.commands.admincommands.GetRamCommand;
 import bot.commands.admincommands.ResetOneVOneGames;
+import bot.commands.admincommands.runtimecode.RunJavaCodeCommand;
 import bot.commands.commandutil.Command;
 import bot.commands.commandutil.CommandEntry;
 import bot.commands.normalcommands.other.DiscordCommand;
@@ -57,8 +58,7 @@ public class Bot extends ListenerAdapter{
     private CommandManager manager;
     public Bot(String token) throws LoginException, InterruptedException {
         ChampionRegistry.registerAllChampions();
-
-        jda = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
+        jda = JDABuilder.createDefault(token).build().awaitReady();
         LinkBotStatusCommand.cache(jda); //this method needs instance of jda to get the text channels
 
         jda.getPresence().setActivity(Activity.playing("lol help"));
@@ -134,18 +134,30 @@ public class Bot extends ListenerAdapter{
         HelpSection adminBan = new DefaultHelpSection("moderating players");
         addCommand(adminCommands, new BanCommand(), adminBan, "ban");
         addCommand(adminCommands, new UnbanCommand(),adminBan,"unban");
+        adminBan.setEmbedBuilder();
+        adminBan.buildHelpPage();
 
         HelpSection adminSpeakSection = new DefaultHelpSection("bot speaking");
         addCommand(adminCommands, new SayCommand(),adminSpeakSection,"say");
         addCommand(adminCommands, new SendAnnouncementCommand(), adminSpeakSection,"sendannouncement");
+        adminSpeakSection.setEmbedBuilder();
+        adminSpeakSection.buildHelpPage();
 
         HelpSection adminBotTechnicals = new DefaultHelpSection("bot technicals");
         addCommand(adminCommands, new StopBotCommand(), adminBotTechnicals,"stopbot");
         addCommand(adminCommands, new ResetOneVOneGames(), adminBotTechnicals,"resetgames");
         addCommand(adminCommands, new GetRamCommand(), adminBotTechnicals, "getram");
+        addCommand(adminCommands, new RunJavaCodeCommand(), adminBotTechnicals, "runcode");
+        adminBotTechnicals.setEmbedBuilder();
+        adminBotTechnicals.buildHelpPage();
 
         HelpSection adminOtherSection = new DefaultHelpSection("other");
-        addCommand(adminCommands, new HelpCommand(),adminOtherSection,"help");
+        HelpCommand adminHelpCommand = new HelpCommand();
+        addCommand(adminCommands,adminHelpCommand,adminOtherSection,"help");
+        adminOtherSection.setEmbedBuilder();
+        adminOtherSection.buildHelpPage();
+
+        adminHelpCommand.createHelpPage(adminBan, adminBotTechnicals, adminOtherSection);
         jda.addEventListener(adminCommands);
 
         jda.addEventListener(this);
