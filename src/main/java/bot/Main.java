@@ -3,6 +3,7 @@ package bot;
 
 import bot.database.MongoConnection;
 
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.rmi.registry.LocateRegistry;
@@ -34,8 +35,12 @@ public class Main{
         //System.out.println(token);
 
 
-
-        new Bot(token);
+        try {
+            new Bot(token);
+        } catch (LoginException le){
+            System.err.println("----LOGIN ERROR----");
+            le.printStackTrace();
+        }
     }
 
 }

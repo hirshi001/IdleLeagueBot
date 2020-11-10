@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.admincommands.BanCommand;
+import bot.commands.admincommands.ClearMessageCommand;
 import bot.commands.admincommands.GetRamCommand;
 import bot.commands.admincommands.ResetOneVOneGames;
 import bot.commands.admincommands.runtimecode.RunJavaCodeCommand;
@@ -154,6 +155,7 @@ public class Bot extends ListenerAdapter{
         HelpSection adminOtherSection = new DefaultHelpSection("other");
         HelpCommand adminHelpCommand = new HelpCommand();
         addCommand(adminCommands,adminHelpCommand,adminOtherSection,"help");
+        addCommand(adminCommands, new ClearMessageCommand(), adminOtherSection, "clearmessage");
         adminOtherSection.setEmbedBuilder();
         adminOtherSection.buildHelpPage();
 
