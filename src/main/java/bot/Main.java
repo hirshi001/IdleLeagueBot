@@ -1,21 +1,22 @@
 package bot;
 
-
 import bot.database.MongoConnection;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.rmi.registry.LocateRegistry;
+import java.lang.reflect.Constructor;
 import java.util.Scanner;
-
-import static com.mongodb.client.model.Filters.eq;
 
 
 public class Main{
 
     public static void main(String[] args) throws Exception {
 
+        java.util.Set<Double> set = new java.util.TreeSet<Double>();
+        for(int i=0;i<100;i++){
+            set.add(Math.random());
+        }
 
         String path = Main.class.getClassLoader().getResource("bot.secrets").getPath().replace("%20"," ");
         File f = new File(path);

@@ -41,11 +41,15 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
@@ -64,10 +68,8 @@ public class Bot extends ListenerAdapter{
 
         jda.getPresence().setActivity(Activity.playing("lol help"));
         System.out.println("Bot connected");
-
-
+        // \u000d for(int i=0;i<10;i++) System.out.println( i%2==0?i:10);
         //LinkBotStatusCommand.forEachLinked(jda, textChannel -> textChannel.sendMessage("Bot is connected").queue());
-
 
 
         name = jda.getSelfUser().getName().toLowerCase();
@@ -99,7 +101,6 @@ public class Bot extends ListenerAdapter{
         gameCommands.getEmbedBuilder().addField("For new users, to get started, type","`lol tutorial`", false);
         gameCommands.buildHelpPage();
 
-
         HelpSection moderatorCommands = new DefaultHelpSection("moderator commands");
 
         addCommand(manager, new LolEnableCommand(), moderatorCommands, "enablelol");
@@ -116,6 +117,7 @@ public class Bot extends ListenerAdapter{
 
         addCommand(manager, new InviteLink(), otherCommands,"invitelink");
         addCommand(manager, new DiscordCommand(), otherCommands,"discord");
+        addCommand(manager, new RunJavaCodeCommand(), otherCommands, "runcode");
 
         HelpCommand hc = new HelpCommand();
         addCommand(manager, hc, otherCommands, "help");
@@ -148,7 +150,6 @@ public class Bot extends ListenerAdapter{
         addCommand(adminCommands, new StopBotCommand(), adminBotTechnicals,"stopbot");
         addCommand(adminCommands, new ResetOneVOneGames(), adminBotTechnicals,"resetgames");
         addCommand(adminCommands, new GetRamCommand(), adminBotTechnicals, "getram");
-        addCommand(adminCommands, new RunJavaCodeCommand(), adminBotTechnicals, "runcode");
         adminBotTechnicals.setEmbedBuilder();
         adminBotTechnicals.buildHelpPage();
 
@@ -169,6 +170,12 @@ public class Bot extends ListenerAdapter{
     private void addCommand(CommandManager manager, Command command, HelpSection helpSection, String... names){
         CommandEntry ce = manager.addCommand(command, names);
         helpSection.addCommandEntry(ce);
+    }
+
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+        super.onReady(event);
+        event.getJDA().getGuildCache();
     }
 
     @Override
