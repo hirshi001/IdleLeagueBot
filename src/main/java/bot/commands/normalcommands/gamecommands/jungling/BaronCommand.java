@@ -70,7 +70,7 @@ public class BaronCommand extends Command {
         final long id = event.getAuthor().getIdLong();
         if(askingToDoBaron.contains(id, event.getChannel().getIdLong())){
             String msg = event.getMessage().getContentRaw();
-            if(msg.equalsIgnoreCase("y") || msg.equalsIgnoreCase("yes")){
+            if("y".equalsIgnoreCase(msg) || "yes".equalsIgnoreCase(msg)){
                 new Thread(() -> baron(id, event)).start();
             }else{
                 event.getChannel().sendMessage("Not doing baron...").queue();
